@@ -75,7 +75,7 @@ if __name__ == "__main__":
 			connexion_serveur.close()
 
 	if version == 2:
-		connexion_au_serveur = ouverture_connexion("localhost", 12800)
+		connexion_au_serveur = ouverture_connexion("localhost", 12803)
 
 		message_a_envoyer = str()
 		while message_a_envoyer != b"fin":

@@ -45,13 +45,13 @@ class Robot:
 
 	def __str__(self):
 		"""Méthode appelée quand on souhaite afficher la classe robot"""
-		msg = "{}".format(self.coordonnee_XY)
+		msg = "{}({})".format(self._forme_robot, self.coordonnee_XY)
 		return msg
 
 
-	def __get__(self):
+	#def __get__(self):
 		"""Méthode appelée quand on souhaite recuperer la classe robot"""
-		return self.coordonnee_XY
+	#	return self.coordonnee_XY
 
 
 	def _set_forme_robot(self, nouvelle_forme):

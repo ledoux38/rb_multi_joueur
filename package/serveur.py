@@ -10,6 +10,13 @@ try:
 except:
 	import connexion as cn
 
+
+try:
+	import package.gestionnaire_clients as gs
+except:
+	import gestionnaire_clients as gs
+
+
 if __name__ == "__main__":
 	version = 3
 
@@ -112,7 +119,7 @@ if __name__ == "__main__":
 
 		try:
 			connexion_principale = st.socket(st.AF_INET, st.SOCK_STREAM)
-			connexion_principale.bind(("", 12800))
+			connexion_principale.bind(("", 12803))
 			connexion_principale.listen(5)
 
 
@@ -121,7 +128,9 @@ if __name__ == "__main__":
 
 		serveur_lance = True
 		print("serveur lancé \n en attente d'une connexion au port: 12800")
-		clients_connectes = []
+		tableau_des_clients = gs.Gestionnaire_clients()
+		
+		#clients_connectes = []
 
 		while serveur_lance:
 
@@ -130,16 +139,18 @@ if __name__ == "__main__":
 
 			for connexion in connexions_demandees:
 				connexions_clients, infos_connexion = connexion.accept()
-				print(infos_connexion)
-				#clients_connectes.append(cn.Connexion(connexion = connexions_clients))
-				clients_connectes.append(connexions_clients)
-
+				#print(clients_connectes, type(clients_connectes))
+				tableau_des_clients.ajouter_connexion(connexions_clients)
+				#clients_connectes.append(connexions_clients)
+				print(tableau_des_clients._tableau_de_connexions[0])
+				print(type(tableau_des_clients._tableau_de_connexions[0]))
 			clients_a_lire = []
 
 			try:
-				#clients_a_lire, wlist, xlist = sc.select(clients_connectes.Connexion.information_connexion, [], [], 0.05)
-				clients_a_lire, wlist, xlist = sc.select(clients_connectes, [], [], 0.05)
-			except select.error:
+				clients_a_lire, wlist, xlist = sc.select(tableau_des_clients.tableau_de_connexions, [], [], 0.05)
+				#clients_a_lire, wlist, xlist = sc.select(clients_connectes, [], [], 0.05)
+				#print(clients_connectes, type(clients_connectes))
+			except sc.error:
 				pass
 
 			else:
@@ -158,3 +169,10 @@ if __name__ == "__main__":
 			client.close()
 
 		connexion_principale.close()
+
+	if version == 4:
+
+		tableau = []
+		tableau.append(cn.Connexion())
+		print(tableau[0])
+
