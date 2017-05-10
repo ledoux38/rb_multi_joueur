@@ -27,21 +27,23 @@ class Connexion:
 		#			le parametre fourni à connexion doit etre de type <socket> et non <{}>""".format(type(connexion)))
 
 		self.robot = rt.Robot(coordonnee_xy_robot, forme_robot)
+		print("type connexion:{}".format(type(connexion)))
 		self._information_connexion = connexion
 
 
 
 	def __str__(self):
 		"""Méthode appelée quand on souhaite afficher la classe robot"""
-		msg = "client{}: robot ({})".format(self._information_connexion, self.robot)
+		msg = "client{}: {}".format(self._information_connexion, self.robot)
 		return msg
 
 
 
-	#def __del__(self):
+	def __del__(self):
 		"""Méthode appelée quand on souhaite supprimer la classe Connexion
 		l'objectif et de pouvoir fermer la connexion la classe"""
-	#	pass
+		#self._information_connexion.close()
+		pass
 
 
 
@@ -55,6 +57,7 @@ class Connexion:
 
 
 	def _get_information_connexion(self):
+		print("connexion: ", type(self._information_connexion))
 		"""Méthode appelée quand on souhaite modifier la forme du robot"""
 		return self._information_connexion
 
@@ -67,7 +70,9 @@ class Connexion:
 
 if __name__ == "__main__":
 
-	a = Connexion()
+	a = Connexion(connexion = 2)
 	print(a.robot)
 	#a = Robot(coordonnee_XY = (2, 3))
 	#a.forme_robot = "Y"
+	b = a._information_connexion
+	print(b)

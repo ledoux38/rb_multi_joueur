@@ -32,10 +32,9 @@ class Gestionnaire_clients:
 
 	def __str__(self):
 		"""Méthode appelée quand on souhaite afficher la classe robot"""
-		msg = "clients: robots("
+		msg = "clients: \n"
 		for clients in self._tableau_de_connexions:
-			msg += "{} ,".format(clients)
-		msg += ") \n"
+			msg += "{} \n".format(clients)
 
 		return msg
 
@@ -44,9 +43,15 @@ class Gestionnaire_clients:
 	def __getitem__(self, index):
 		"""Cette méthode spéciale est appelée quand on fait objet[index]
 		Elle redirige vers self._dictionnaire[index]"""
-		connexion = self._tableau_de_connexions[index]
-		return connexion._information_connexion
+		#print("on demande l'index[{}]".format(index))
+		#connexion = self._tableau_de_connexions[index]
+		#print(connexion, "\n", type(connexion))
+		#return connexion._information_connexion
+		
 
+		connexion = self._tableau_de_connexions[index]
+		print("on demande l'index[{}]".format(type(connexion)))
+		return connexion
 		
 
 	def _get_tableau_de_connexions(self):
@@ -62,7 +67,17 @@ class Gestionnaire_clients:
 
 
 	def ajouter_connexion(self, nouvelle_connexion):
-		self._tableau_de_connexions.append(nouvelle_connexion)
+		#self._tableau_de_connexions.append(nouvelle_connexion)
+		self._tableau_de_connexions.append(cn.Connexion(connexion = nouvelle_connexion))
+
+
+
+
+	def recuperer_connexion(self, index):
+		print("on demande l'index[{}]".format(index))
+		connexion = self._tableau_de_connexions[index]
+		a = connexion._information_connexion		
+		return a
 
 
 	tableau_de_connexions = property(fget = _get_tableau_de_connexions, fset = _set_tableau_de_connexions)
@@ -76,6 +91,6 @@ if __name__ == "__main__":
 	a.tableau_de_connexions = ["127.0.0.2", 12800]
 	a.tableau_de_connexions = ["127.0.0.3", 12800]
 	print(a)
+	print(a[0])
+	#print(a)
 	
-	#erreur je lui retourne la class connexions et non l'attribut socket de connexion
-	#clients_a_lire, wlist, xlist = sc.select(tableau_des_clients.tableau_de_connexions, [], [], 0.05)

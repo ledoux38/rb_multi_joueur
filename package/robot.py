@@ -45,7 +45,7 @@ class Robot:
 
 	def __str__(self):
 		"""Méthode appelée quand on souhaite afficher la classe robot"""
-		msg = "{}({})".format(self._forme_robot, self.coordonnee_XY)
+		msg = "{} {}".format(self._forme_robot, self.coordonnee_XY)
 		return msg
 
 
