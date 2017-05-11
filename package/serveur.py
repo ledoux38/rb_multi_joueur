@@ -77,8 +77,8 @@ class Serveur:
 
 	def attente_de_connexion(self):
 		connexion_client, info_client = self.connexion.accept()
-		print("serveur: {}",format(type(connexion_client)))
-		self._tableau_de_connexions.ajouter_connexion(connexion_client)
+		self._tableau_de_connexions += connexion_client
+		#self._tableau_de_connexions.ajouter_connexion(connexion_client)
 
 
 	tableau_de_connexions = property(fget = _get_tableau_de_connexions, fset = _set_tableau_de_connexions)
@@ -260,5 +260,9 @@ if __name__ == "__main__":
 
 			while True:
 				a.attente_de_connexion()
+				a.attente_de_connexion()
 				a.reception_donnee(a._tableau_de_connexions[0])
 				a.emission_donnee(a._tableau_de_connexions[0], donnee = "coucou")
+				a.reception_donnee(a._tableau_de_connexions[1])
+				a.emission_donnee(a._tableau_de_connexions[1], donnee = "coucou")
+				#print(a._tableau_de_connexions[0])

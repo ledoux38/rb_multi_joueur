@@ -23,20 +23,31 @@ class Gestionnaire_clients:
 		"""
 		self._tableau_de_connexions = []
 
-	#def __del__(self):
+
+	def __del__(self):
 		"""Méthode appelée quand on souhaite supprimer la classe Gestionnaire_clients
 		l'objectif et de pouvoir fermer les connexion une à une du tableau pour ensuite fermer integralement la classe"""
-	#	pass
+		#for clients in self._tableau_de_connexions:
+		pass
 
 
 
 	def __str__(self):
 		"""Méthode appelée quand on souhaite afficher la classe robot"""
 		msg = "clients: \n"
-		for clients in self._tableau_de_connexions:
-			msg += "{} \n".format(clients)
+		for num, clients in enumerate(self._tableau_de_connexions):
+			msg += "{}: {} \n".format(num, clients)
 
 		return msg
+
+
+
+	def __iadd__(self, nouvelle_connexion):
+		print("coucou")
+		"""Cette méthode spéciale est appelée quand on fait une operation de type +="""
+		self.ajouter_connexion(nouvelle_connexion)
+		return self
+
 
 
 
@@ -57,8 +68,8 @@ class Gestionnaire_clients:
 	def _set_tableau_de_connexions(self, nouvelle_connexion):
 		#if isinstance(nouvelle_connexion, list):
 		#	raise TypeError("""Erreur le parametre nouvelle_connexion n'est pas de type list mais de type {}""".format(type(nouvelle_connexion)))
-		self._tableau_de_connexions.append(cn.Connexion(connexion = nouvelle_connexion))
-
+		#self._tableau_de_connexions.append(cn.Connexion(connexion = nouvelle_connexion))
+		pass
 
 
 	def ajouter_connexion(self, nouvelle_connexion):
@@ -82,9 +93,10 @@ class Gestionnaire_clients:
 if __name__ == "__main__":
 
 	a = Gestionnaire_clients()
-	a.tableau_de_connexions = ["127.0.0.1", 12800]
-	a.tableau_de_connexions = ["127.0.0.2", 12800]
-	a.tableau_de_connexions = ["127.0.0.3", 12800]
+	a.tableau_de_connexions += ["127.0.0.1", 12800]
+	a.tableau_de_connexions += ["127.0.0.2", 12800]
+	a.tableau_de_connexions += ["127.0.0.3", 12800]
+	print("aaaaaaaaaaaaaaaaaaaaaaaa")
 	print(a)
 	print(a[0])
 	#print(a)
