@@ -55,22 +55,24 @@ class Serveur:
 		connexion = st.socket(st.AF_INET, st.SOCK_STREAM)
 		connexion.bind((hote, port))
 		connexion.listen(listen)
-		#print(type(connexion))
 		return connexion	
 
 
 
-	def emission_donnee(self, client, donnee):
+	def emission_donnee(self, connexion, donnee):
 		message_a_envoyer = str(donnee)
 		message_a_envoyer = message_a_envoyer.encode()
-		client._information_connexion.send(message_a_envoyer)
+		connexion.send(message_a_envoyer)
 
 
 
-	def reception_donnee(self, index, taille = 1024):
-		message_recu = self._tableau_de_connexions[index]._information_connexion.recv(taille)
-		#print(connexion_client)
+
+
+	def reception_donnee(self, connexion, taille = 1024):
+		message_recu =connexion.recv(taille)
 		print(message_recu.decode())
+
+
 
 
 	def attente_de_connexion(self):
@@ -244,7 +246,7 @@ if __name__ == "__main__":
 		connexion_principale.close()
 
 
-
+	#version en class Serveur
 	if version == 5:
 		try:
 			a = Serveur("127.0.0.1", 12100)
@@ -258,4 +260,5 @@ if __name__ == "__main__":
 
 			while True:
 				a.attente_de_connexion()
-				a.reception_donnee(index = 0)
+				a.reception_donnee(a._tableau_de_connexions[0])
+				a.emission_donnee(a._tableau_de_connexions[0], donnee = "coucou")

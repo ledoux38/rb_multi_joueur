@@ -43,15 +43,10 @@ class Gestionnaire_clients:
 	def __getitem__(self, index):
 		"""Cette méthode spéciale est appelée quand on fait objet[index]
 		Elle redirige vers self._dictionnaire[index]"""
-		#print("on demande l'index[{}]".format(index))
-		#connexion = self._tableau_de_connexions[index]
-		#print(connexion, "\n", type(connexion))
-		#return connexion._information_connexion
-		
 
 		connexion = self._tableau_de_connexions[index]
 		print("on demande l'index[{}]".format(type(connexion)))
-		return connexion
+		return connexion._information_connexion
 		
 
 	def _get_tableau_de_connexions(self):

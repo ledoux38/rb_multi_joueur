@@ -1,6 +1,7 @@
 #!/usr/bin/python3.5
 # -*-coding:Utf-8 -* 
 import socket as st
+
 try:
 	import package.robot as rt
 except:
@@ -17,14 +18,11 @@ class Connexion:
 				- information_connexion
 
 	"""
-	def __init__(self, coordonnee_xy_robot = (0, 0), forme_robot = "X", connexion = []):
+	def __init__(self, coordonnee_xy_robot = (0, 0), forme_robot = "X", connexion = None):
 
 		"""instancie le Robot.
 		le robot est representer par une forme (X) et des coordonnes XY
 		"""
-		#if not isinstance(connexion, st.socket):
-		#		raise TypeError("""Erreur lors de l'instanciation de la classe Connexion!
-		#			le parametre fourni à connexion doit etre de type <socket> et non <{}>""".format(type(connexion)))
 
 		self.robot = rt.Robot(coordonnee_xy_robot, forme_robot)
 		print("type connexion:{}".format(type(connexion)))
@@ -47,12 +45,15 @@ class Connexion:
 
 
 
-	def _set_information_connexion(self, modification_connexion):
-		"""Méthode appelée quand on souhaite modifier les information de connexion"""
-		if not isinstance(modification_connexion, st.socket):
-				raise TypeError("""erreur type parametre le parametre fourni à connexion doit etre de type <socket> et non <{}>""".format(type(connexion)))
-
-		self._information_connexion = modification_connexion
+	def _set_information_connexion(self, connexion):
+		"""Méthode appelée quand on souhaite modifier les informations de connexion
+		mais comme je ne souhaite pas qu'elle soit modifiée je ne mais rien"""
+		if isinstance(self._information_connexion, None):
+			if not isinstance(connexion, st.socket):
+					raise TypeError("""Erreur dans la classe Connexion!
+									le parametre fourni à Connexion doit etre de type <socket> et non <{}>""".format(type(connexion)))
+		else:
+			pass
 
 
 
@@ -70,7 +71,7 @@ class Connexion:
 
 if __name__ == "__main__":
 
-	a = Connexion(connexion = 2)
+	a = Connexion()
 	print(a.robot)
 	#a = Robot(coordonnee_XY = (2, 3))
 	#a.forme_robot = "Y"
