@@ -40,7 +40,14 @@ class Carte:
 
 	def __str__(self):
 		"""Méthode appelée quand on souhaite afficher la classe robot"""
-		msg = "{} \n <Carte: {}>".format(self.representation_labyrinthe_str(), self.nom)
+		chaine=str()
+		for x in self.labyrinthe:
+			for y in x:
+				chaine += y
+
+
+
+		msg = "{} \n <Carte: {}>".format(chaine, self.nom)
 		return msg
 
 
@@ -73,50 +80,63 @@ class Carte:
 
 
 
-	def representation_labyrinthe_str(self):
+	def representation_labyrinthe_str(self, labyrinthe):
 		"""representation du labyrinthe en chaine de caractere"""
 		chaine=str()
-		for x in self.labyrinthe:
+		for x in labyrinthe:
 			for y in x:
 				chaine += y
 		return chaine
 
 
 
-	def get_la_valeur_aux_coordonnees(self,coordonnee):
+	def recherche_la_valeur_aux_coordonnees(self,coordonnee):
 		"""on recupere la valeur directement au coordonnee choisi"""
 		valeur = self.labyrinthe[coordonnee[0]][coordonnee[1]]
 		return valeur
 
 
 
-	def set_la_valeur_aux_coordonnee(self,valeur,coordonneeYX):
+	def modifie_la_valeur_aux_coordonnees(self, labyrinthe, valeur, coordonneeYX):
 		"""on modifie la valeur au coordonnée choisi"""
-		self.labyrinthe[coordonneeYX[0]][coordonneeYX[1]] = valeur
+		labyrinthe[coordonneeYX[0]][coordonneeYX[1]] = valeur
+		return labyrinthe
 
 
-
-	def get_les_coordonnees_de_la_valeur(self,valeur="X"):
+	def recherche_les_coordonnees_des_valeurs(self,valeurs="X"):
 		"""retourne les coordonnee de la valeur trouvé.
 		par defaut la valeur a chercher c'est X"""
 		liste = list()
 		for j,y in enumerate(self.labyrinthe):
 			for v,x in enumerate(y):
-				if x == valeur:
-					liste.append(j)
-					liste.append(v)
+				if x == valeurs:
+					coord = (j, v)
+					liste.append(coord)
 		return liste
 
 
 
+
 	def bordure_labyrinthe(self):
+		nombre = []
+		for i, y in enumerate(self.labyrinthe):
+			nombre.insert(-1, len(self.labyrinthe[i]))
+
+		nombre = max(nombre)
 
 		for i, y in enumerate(self.labyrinthe):
 			self.labyrinthe[i].insert( 0, "O")
-			self.labyrinthe[i].insert( -1, "O")
+			j = len(self.labyrinthe[i])
+			while j <= nombre:
+				self.labyrinthe[i].insert( -1, " ")
 
-		self.labyrinthe.insert( 0, self.bordure_principale( len( self.labyrinthe[0] ) ) )
-		self.labyrinthe.insert( -1, self.bordure_principale( len( self.labyrinthe[-1] ) ) )
+				j += 1
+			self.labyrinthe[i][-1] = "O"
+			self.labyrinthe[i].append("\n")
+
+
+		self.labyrinthe.insert( 0, self.bordure_principale( nombre + 2 ) )
+		self.labyrinthe.append(self.bordure_principale( nombre +2 ) )
 
 
 
@@ -132,6 +152,20 @@ class Carte:
 
 
 
+	def carte_pour_utilisateur(self, coordonnee_utilisateur, valeur = "X"):
+		if not isinstance(coordonnee_utilisateur, tuple):
+			raise TypeError("erreur le typage de la variable coordonnee_utilisateur doit etre de type <tuple> et non <{}>".format(type(nom)))
+		labyrinthe = self.labyrinthe
+		liste_coordonnee = self.recherche_les_coordonnees_des_valeurs(valeur)
+		print(liste_coordonnee)
+		for coordonnee in liste_coordonnee:
+			if coordonnee != coordonnee_utilisateur:
+				labyrinthe = self.modifie_la_valeur_aux_coordonnees(labyrinthe, "x", coordonnee)
+		return labyrinthe
+
+
+
+
 if __name__ == '__main__':
 
 	a = utils.chargement_donnee("/home/ledoux/Documents/Programmation/python/python-le-on/proj/rb_multi_joueur/cartes/")
@@ -142,6 +176,10 @@ if __name__ == '__main__':
 	a = Carte(nom_labyrinthe, labyrinthe)
 	a.representation_labyrinthe_tableau()
 	print(a)
+	b = a.recherche_les_coordonnees_des_valeurs()[0]
+	print(b)
+	print(a.recherche_la_valeur_aux_coordonnees((4, 9)))
+	print(a.representation_labyrinthe_str(a.carte_pour_utilisateur(coordonnee_utilisateur = (4, 9))))
 	"""
 	Carte(a[0], a[1])
 	print(a)

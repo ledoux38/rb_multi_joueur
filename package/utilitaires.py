@@ -8,7 +8,7 @@ except:
 
 #import package.module_labyrinthe as utils
 import os
-
+import collections
 def validation_de_la_saisie(reponse, list_action, longueur_reponse = 1):
 	"""Verifie que la saisie du joueur est correcte"""
 
@@ -103,6 +103,55 @@ def interation_utilisateur(phrase_principale, action, phrase_de_fin= "votre repo
 
 
 
+def interation_utilisateurV2(phrase_principale, action, phrase_de_fin= "votre reponse? "):
+	"""classe qui propose des choix a l'utilisateur"""
+
+	if not isinstance(phrase_principale, str):
+		raise TypeError("erreur parametre <phrase_principale> type str ")
+
+	if not isinstance(phrase_de_fin, str):
+		raise TypeError("erreur parametre <phrase_de_fin> type str ")
+
+	if isinstance(action, dict):
+
+		#rajout dans la phrase_principale les cle et description des cles
+		for cle, valeur in action.items():
+			phrase_principale += "\n<{}>: {} ".format(cle, valeur)
+
+		#tant que la saisie du resultat n'est pas correcte par rapport aux cles je recommence
+		while True:
+			print("{}".format(phrase_principale))
+			reponse = input(phrase_de_fin)
+			reponse = conversion_saisie_en_majuscule(chaine = reponse)
+
+			if reponse in str(action.keys()):
+				return reponse
+			else:
+				print("Erreur dans la saisie")
+
+
+	elif isinstance( action, list):
+
+		for num, valeur in enumerate(action):
+			phrase_principale += "\n<{}>: {} ".format(num, valeur)
+
+		#tant que la saisie du resultat n'est pas correcte par rapport aux cles je recommence
+		while True:
+			print("{}".format(phrase_principale))
+			reponse = input(phrase_de_fin)
+			reponse = conversion_saisie_en_majuscule(chaine = reponse)
+
+			if int(reponse) >= 0 and int(reponse) <=(len(action) -1 ):
+				return reponse
+			else:
+				print("Erreur dans la saisie")
+
+	else:
+		raise TypeError("erreur parametre <action> doit etre de type <dict> ou <list> ")
+
+
+
+
 def listes_cartes(liste_carte):
 	#recupere une liste de fichier et la convertie en dict
 	if not isinstance(liste_carte,list):
@@ -167,9 +216,8 @@ def sauvegarde_donnee(adresse_dossier,carte):
  
 
 if __name__ == "__main__":
+	c = {"Q":"quitter", "A": "Annuler"}
+	b = collections.OrderedDict(c)
 
-	#a = interation_utilisateur("bonjour", {"Q":"quitter", "A": "Annuler"})
-	a = chargement_donnee( "/home/ledoux/Documents/Programmation/python/python-le-on/proj/rb_multi_joueur/package/" ) 
-
-
+	a = interation_utilisateur("bonjour", b)
 
