@@ -89,48 +89,30 @@ class Carte:
 
 
 
-	def rechercher_la_valeur_aux_coordonnees(self,coordonnee, labyrinthe = None):
+	def recherche_la_valeur_aux_coordonnees(self,coordonnee):
 		"""on recupere la valeur directement au coordonnee choisi"""
-		if not labyrinthe == type(None):
-			valeur = self.labyrinthe[(coordonnee[0],coordonnee[1])]
-			return valeur
-
-		else:
-			valeur = labyrinthe[(coordonnee[0],coordonnee[1])]
-			return valeur
+		valeur = self.labyrinthe[(coordonnee[0],coordonnee[1])]
+		return valeur
 
 
 
-	def modifier_la_valeur_aux_coordonnees(self, valeur, coordonnee, labyrinthe = None):
+	def modifie_la_valeur_aux_coordonnees(self, valeur, coordonnee):
 		"""on modifie la valeur au coordonnée choisi"""
-		if not labyrinthe == type(None):
-			self.labyrinthe[(coordonnee[0],coordonnee[1])] = valeur
 
-		else:
-			labyrinthe[(coordonnee[0],coordonnee[1])] = valeur
+		self.labyrinthe[(coordonnee[0],coordonnee[1])] = valeur
 
 
 
-	def rechercher_les_coordonnees_des_valeurs(self, valeur, labyrinthe = None):
-		"""retourne les coordonnees de la valeur trouvé."""
-		if not labyrinthe == type(None):
-			liste = list()
-			for j,y in enumerate(self.labyrinthe):
-				for v,x in enumerate(y):
-						retour = self.labyrinthe[(j, v)]
-						if isinstance(retour, type(valeur)):
-							liste.append((j, v))
-			return liste
+	def recherche_les_coordonnees_des_valeurs(self, valeur):
+		"""retourne les coordonnee de la valeur trouvé."""
 
-		else:
-
-			liste = list()
-			for j,y in enumerate(labyrinthe):
-				for v,x in enumerate(y):
-						retour = labyrinthe[(j, v)]
-						if isinstance(retour, type(valeur)):
-							liste.append((j, v))
-			return liste
+		liste = list()
+		for j,y in enumerate(self.labyrinthe):
+			for v,x in enumerate(y):
+					retour = self.labyrinthe[(j, v)]
+					if isinstance(retour, type(valeur)):
+						liste.append((j, v))
+		return liste
 
 
 
@@ -178,18 +160,19 @@ class Carte:
 		copie_labyrinthe[coordonnee[0]][coordonnee[1]] = valeur
 		#return copie_labyrinthe
 
-
+	#version avec le tableau du tableau
 
 	def carte_pour_utilisateur(self, coordonnee_utilisateur):
 		if not isinstance(coordonnee_utilisateur, tuple):
 			raise TypeError("erreur le typage de la variable coordonnee_utilisateur doit etre de type <tuple> et non <{}>".format(type(nom)))
 		copie_labyrinthe = copy.deepcopy(self.labyrinthe.tableau)
 
-		liste_coordonnees = list(self.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
+		liste_coordonnees = list(self.recherche_les_coordonnees_des_valeurs(el_carte.Joueur()))
 		print(coordonnee_utilisateur)
 		for coordonnee in liste_coordonnees:
 			if coordonnee != coordonnee_utilisateur:
-				self.modifier_la_valeur_aux_coordonnees( el_carte.Autres_joueurs(), coordonnee, copie_labyrinthe)
+				self.modification_sur_copie_labyrinthe(coordonnee, copie_labyrinthe, el_carte.Autres_joueurs())
+
 		chaine=str()
 		for j,y in enumerate(copie_labyrinthe):
 			for v,x in enumerate(y):
@@ -205,15 +188,27 @@ if __name__ == '__main__':
 	labyrinthe = a[1]
 	nom_labyrinthe = a[0]
 	a = Carte(nom_labyrinthe, labyrinthe)
-	print(a)
-	print(a.rechercher_la_valeur_aux_coordonnees((0, 0)))
+	#print(a)
+	#print(a.recherche_la_valeur_aux_coordonnees((0, 0)))
 	a.bordure_labyrinthe()
-	print(a)
-	a.modifier_la_valeur_aux_coordonnees(el_carte.Couloir(), (0, 0))
-	print(a)
+	#print(a)
+	#a.modifie_la_valeur_aux_coordonnees(el_carte.Couloir(), (0, 0))
+	#print(a)
 	
-	print(a.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
+	#print(a.recherche_les_coordonnees_des_valeurs(el_carte.Joueur()))
 	print(a.carte_pour_utilisateur((4, 9)))
 	print(a.labyrinthe)
-
+	"""
+	i = [ ["0", "0", "0", "0", "0"], ["0", "0", "0", "0", "0"] ]
+	for j,y in enumerate(i):
+		for v,x in enumerate(y):
+			if x == "0":
+				i[j][v] = (el_carte.Mur((j, v)))
+	
+	for x in i:
+		for y in x:
+			print (y)
+		print("\n")
+	print
+	"""
 
