@@ -57,6 +57,7 @@ class Carte:
 		return "{}".format(self.labyrinthe)
 
 
+
 	def creer_labyrinthe_depuis_chaine(self,chaine):
 		"""Méthode appelée quand on souhaite creer le labyrinthe"""
 		
@@ -99,7 +100,7 @@ class Carte:
 	def modifier_la_valeur_aux_coordonnees(self, valeur, coordonnee):
 		"""on modifie la valeur au coordonnée choisi"""
 
-		self.labyrinthe[(coordonnee[0],coordonnee[1])] = valeur
+		self.labyrinthe[(coordonnee[1],coordonnee[0])] = valeur
 
 
 
@@ -111,7 +112,7 @@ class Carte:
 			for v,x in enumerate(y):
 					retour = self.labyrinthe[(j, v)]
 					if isinstance(retour, type(valeur)):
-						liste.append((j, v))
+						liste.append((v, j))
 		return liste
 
 
@@ -172,6 +173,21 @@ class Carte:
 
 
 
+	def initialisation_carte(self):
+		liste = self.rechercher_les_coordonnees_des_valeurs(valeur = el_carte.Joueur())
+		print(liste)
+		for i in liste:
+			self.modifier_la_valeur_aux_coordonnees(coordonnee = i, valeur = el_carte.Couloir())
+
+
+	def positionement_aleatoire(self, donnee, taille_zone_interdite = 2, sortie = el_carte.Sortie()):
+		pass
+
+
+
+
+
+
 if __name__ == '__main__':
 
 	a = utils.chargement_donnee("/home/ledoux/Documents/Programmation/python/python-le-on/proj/rb_multi_joueur/cartes/")
@@ -179,15 +195,17 @@ if __name__ == '__main__':
 	nom_labyrinthe = a[0]
 	a = Carte(nom_labyrinthe, labyrinthe)
 	print(a)
-	print(a.rechercher_la_valeur_aux_coordonnees((0, 0)))
+	#print(a.rechercher_la_valeur_aux_coordonnees((0, 0)))
 	a.bordure_labyrinthe()
+	a.initialisation_carte()
 	print(a)
-	a.modifier_la_valeur_aux_coordonnees(el_carte.Couloir(), (0, 0))
-	print(a)
+	#print(a)
+	#a.modifier_la_valeur_aux_coordonnees(el_carte.Couloir(), (0, 0))
+	#print(a)
 	
-	print(a.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
-	print(a.carte_utilisateur((4, 9)))
-	print(a.labyrinthe)
+	#print(a.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
+	#print(a.carte_utilisateur((4, 9)))
+	#print(a.labyrinthe)
 	"""
 	i = [ ["0", "0", "0", "0", "0"], ["0", "0", "0", "0", "0"] ]
 	for j,y in enumerate(i):
