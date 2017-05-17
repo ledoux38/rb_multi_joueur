@@ -20,9 +20,9 @@ except:
 
 
 try:
-	import package.tableau_carte 
+	import package.tableau 
 except:
-	import tableau_carte
+	import tableau
 
 import copy
 
@@ -42,7 +42,7 @@ class Carte:
 			raise TypeError("erreur le typage de la variable chaine doit etre de type <str> et non <{}>".format(type(chaine)))
 
 		self.nom = nom
-		self.labyrinthe = tableau_carte.Tableau_carte(self.creer_labyrinthe_depuis_chaine(chaine))
+		self.labyrinthe = tableau.Tableau(self.creer_labyrinthe_depuis_chaine(chaine))
 
 
 
@@ -146,6 +146,7 @@ class Carte:
 
 
 	def bordure_principale(self, taille):
+		"""Méthode appelée quand on souhaite creer la premiere et derniere bordure sur l'extremité du labyrinthe"""
 		bordure = []
 		i = 0
 		while i <= taille-1:
@@ -155,30 +156,19 @@ class Carte:
 
 
 
-	def modification_sur_copie_labyrinthe(self, coordonnee, copie_labyrinthe, valeur):
-		#print(copie_labyrinthe)
-		copie_labyrinthe[coordonnee[0]][coordonnee[1]] = valeur
-		#return copie_labyrinthe
-
-
-
-	def carte_pour_utilisateur(self, coordonnee_utilisateur):
+	def carte_utilisateur(self, coordonnee_utilisateur):
+		"""Méthode appelée quand on souhaite creer une carte pour un utilisateur"""
 		if not isinstance(coordonnee_utilisateur, tuple):
 			raise TypeError("erreur le typage de la variable coordonnee_utilisateur doit etre de type <tuple> et non <{}>".format(type(nom)))
-		copie_labyrinthe = copy.deepcopy(self.labyrinthe.tableau)
+		copie_labyrinthe = tableau.Tableau(self.labyrinthe.tableau)
 
 		liste_coordonnees = list(self.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
 		print(coordonnee_utilisateur)
 		for coordonnee in liste_coordonnees:
 			if coordonnee != coordonnee_utilisateur:
-				self.modification_sur_copie_labyrinthe(coordonnee, copie_labyrinthe, el_carte.Autres_joueurs())
+				copie_labyrinthe[coordonnee[0]][coordonnee[1]] = el_carte.Autres_joueurs()
 
-		chaine=str()
-		for j,y in enumerate(copie_labyrinthe):
-			for v,x in enumerate(y):
-				chaine += str(copie_labyrinthe[j][v])
-			chaine +="\n"
-		return chaine
+		return copie_labyrinthe.tableau_en_str()
 
 
 
@@ -196,7 +186,7 @@ if __name__ == '__main__':
 	print(a)
 	
 	print(a.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
-	print(a.carte_pour_utilisateur((4, 9)))
+	print(a.carte_utilisateur((4, 9)))
 	print(a.labyrinthe)
 	"""
 	i = [ ["0", "0", "0", "0", "0"], ["0", "0", "0", "0", "0"] ]
