@@ -89,21 +89,21 @@ class Carte:
 
 
 
-	def recherche_la_valeur_aux_coordonnees(self,coordonnee):
+	def rechercher_la_valeur_aux_coordonnees(self,coordonnee):
 		"""on recupere la valeur directement au coordonnee choisi"""
 		valeur = self.labyrinthe[(coordonnee[0],coordonnee[1])]
 		return valeur
 
 
 
-	def modifie_la_valeur_aux_coordonnees(self, valeur, coordonnee):
+	def modifier_la_valeur_aux_coordonnees(self, valeur, coordonnee):
 		"""on modifie la valeur au coordonnée choisi"""
 
 		self.labyrinthe[(coordonnee[0],coordonnee[1])] = valeur
 
 
 
-	def recherche_les_coordonnees_des_valeurs(self, valeur):
+	def rechercher_les_coordonnees_des_valeurs(self, valeur):
 		"""retourne les coordonnee de la valeur trouvé."""
 
 		liste = list()
@@ -160,14 +160,14 @@ class Carte:
 		copie_labyrinthe[coordonnee[0]][coordonnee[1]] = valeur
 		#return copie_labyrinthe
 
-	#version avec le tableau du tableau
+
 
 	def carte_pour_utilisateur(self, coordonnee_utilisateur):
 		if not isinstance(coordonnee_utilisateur, tuple):
 			raise TypeError("erreur le typage de la variable coordonnee_utilisateur doit etre de type <tuple> et non <{}>".format(type(nom)))
 		copie_labyrinthe = copy.deepcopy(self.labyrinthe.tableau)
 
-		liste_coordonnees = list(self.recherche_les_coordonnees_des_valeurs(el_carte.Joueur()))
+		liste_coordonnees = list(self.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
 		print(coordonnee_utilisateur)
 		for coordonnee in liste_coordonnees:
 			if coordonnee != coordonnee_utilisateur:
@@ -188,14 +188,14 @@ if __name__ == '__main__':
 	labyrinthe = a[1]
 	nom_labyrinthe = a[0]
 	a = Carte(nom_labyrinthe, labyrinthe)
-	#print(a)
-	#print(a.recherche_la_valeur_aux_coordonnees((0, 0)))
+	print(a)
+	print(a.rechercher_la_valeur_aux_coordonnees((0, 0)))
 	a.bordure_labyrinthe()
-	#print(a)
-	#a.modifie_la_valeur_aux_coordonnees(el_carte.Couloir(), (0, 0))
-	#print(a)
+	print(a)
+	a.modifier_la_valeur_aux_coordonnees(el_carte.Couloir(), (0, 0))
+	print(a)
 	
-	#print(a.recherche_les_coordonnees_des_valeurs(el_carte.Joueur()))
+	print(a.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
 	print(a.carte_pour_utilisateur((4, 9)))
 	print(a.labyrinthe)
 	"""
