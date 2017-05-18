@@ -26,6 +26,8 @@ except:
 
 import copy
 
+import random  
+
 class Carte:
 	"""Objet de transition entre un fichier et un labyrinthe."""
 
@@ -81,7 +83,7 @@ class Carte:
 				elif x == "U":
 					ligne.append(el_carte.Sortie())
 				else:
-					print("erreur lettre non reconnu par le programme")
+					ligne.append(el_carte.Couloir())
 
 			else:
 				labyrinthe.append(ligne)
@@ -134,7 +136,7 @@ class Carte:
 
 			while j <= nombre:
 				#si les bordures sont irreguliere on rajoute des couloirs pour avoir une ligne droite
-				self.labyrinthe.tableau[i].append(el_carte.Couloir())
+				self.labyrinthe.tableau[i].append(el_carte.Bordure())
 				j += 1
 
 			#je rajoute la derniere bordure a la fin de chaque ligne
@@ -174,19 +176,21 @@ class Carte:
 
 
 	def initialisation_carte(self):
+		"""Méthode appelée quand on souhaite supprimer les joueurs existant sur la carte"""
 		liste = self.rechercher_les_coordonnees_des_valeurs(valeur = el_carte.Joueur())
 		print(liste)
 		for i in liste:
 			self.modifier_la_valeur_aux_coordonnees(coordonnee = i, valeur = el_carte.Couloir())
 
 
-	def positionement_aleatoire(self, donnee, taille_zone_interdite = 2, sortie = el_carte.Sortie()):
-		pass
-
-
-
-
-
+	def positionement_aleatoire(self, taille_zone_interdite = 2):
+		position_sortie = self.rechercher_les_coordonnees_des_valeurs(el_carte.Sortie())
+		tout_les_couloirs = tableau.Tableau(self.rechercher_les_coordonnees_des_valeurs(el_carte.Couloir()))
+		
+		coordonnee = random.choice(tout_les_couloirs.tableau)
+		print(coordonnee)
+		self.modifier_la_valeur_aux_coordonnees(coordonnee = coordonnee, valeur = el_carte.Joueur(coordonnee = coordonnee))
+		
 
 if __name__ == '__main__':
 
@@ -198,6 +202,8 @@ if __name__ == '__main__':
 	#print(a.rechercher_la_valeur_aux_coordonnees((0, 0)))
 	a.bordure_labyrinthe()
 	a.initialisation_carte()
+	print(a)
+	a.positionement_aleatoire()
 	print(a)
 	#print(a)
 	#a.modifier_la_valeur_aux_coordonnees(el_carte.Couloir(), (0, 0))
