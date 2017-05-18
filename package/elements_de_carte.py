@@ -3,13 +3,13 @@
 
 class Elements_de_carte():
 	"""la classe Elements_de_carte et une classe de base pour les autres classe(Joueur, Mur, Bordure, Porte, Couloir)"""
-	def __init__(self):
+	def __init__(self, coordonnee = (0, 0)):
 
 
 		self.destructible = False
 		self.traversant = False
 		self.forme = ""
-		self.coordonnee = None
+		self.coordonnee = coordonnee
 
 
 
@@ -27,10 +27,10 @@ class Elements_de_carte():
 
 
 class Joueur(Elements_de_carte):
-	def __init__(self):
-		Elements_de_carte.__init__(self)
+	def __init__(self, coordonnee = (0, 0)):
+		Elements_de_carte.__init__(self, coordonnee = coordonnee)
 		self.forme = "X"
-		self.element_avant_nouvelle_position = Couloir()
+		self.element_avant_nouvelle_position = Couloir(coordonnee = coordonnee)
 
 
 class Autres_joueurs(Elements_de_carte):
@@ -64,8 +64,8 @@ class Porte(Elements_de_carte):
 
 
 class Couloir(Elements_de_carte):
-	def __init__(self):
-		Elements_de_carte.__init__(self)
+	def __init__(self, coordonnee = (0, 0)):
+		Elements_de_carte.__init__(self, coordonnee = coordonnee)
 		self.forme = " "
 		self.traversant = True
 
