@@ -176,21 +176,72 @@ class Carte:
 
 
 	def initialisation_carte(self):
-		"""Méthode appelée quand on souhaite supprimer les joueurs existant sur la carte"""
+		"""Méthode appelée quand on souhaite supprimer les joueurs existant sur la carte et positionner les joueurs aleatoirement"""
 		liste = self.rechercher_les_coordonnees_des_valeurs(valeur = el_carte.Joueur())
 		print(liste)
 		for i in liste:
 			self.modifier_la_valeur_aux_coordonnees(coordonnee = i, valeur = el_carte.Couloir())
 
+		for Y,y in enumerate(self.labyrinthe):
+			for X,x in enumerate(y):
+				self.labyrinthe[Y][X].coordonnee = (Y,X)
 
-	def positionement_aleatoire(self, taille_zone_interdite = 2):
+
+
+	def creation_zone_interdite(self):
+		"""Méthode appelée quand on souhaite creer creation zone interdite pour le positionnement aleatoire"""
 		position_sortie = self.rechercher_les_coordonnees_des_valeurs(el_carte.Sortie())
+
+		Y = position_sortie[0][1]
+		X = position_sortie[0][0]
+
+		plage_y = [Y-1, Y+2]
+
+		if plage_y[0] < 0:	plage_y[0] = 0
+
+		if plage_y[1] <0:	plage_y[1] = 0
+
+		echantillion_y = self.labyrinthe[plage_y[0]:plage_y[1]]
+		
+		plage_x = [X-1, X+2]
+		
+		if plage_x[0] < 0:	plage_x[0] = 0
+			
+		if plage_x[1] <0:	plage_x[1] = 0
+
+		echantillion_x = []
+		for _y in echantillion_y:
+			echantillion_x.append(_y[plage_x[0]:plage_x[1]])	
+
+		return echantillion_x
+
+
+
+	def liste_zone_apparition(self, liste_des_zone, zone_interdite):
+		"""Méthode appelée quand on souhaite creer liste de zone d'apparition autorisé"""
+		for z_interdite in zone_interdite:
+ 
+			for l_zone in liste_des_zone:
+
+				if z_interdite == l_zone:
+					liste_des_zone.remove(l_zone)
+
+
+
+	def positionement_aleatoire(self):
+		"""Méthode appelée quand on souhaite faire un positionnement aleatoire des joueurs"""
+
 		tout_les_couloirs = tableau.Tableau(self.rechercher_les_coordonnees_des_valeurs(el_carte.Couloir()))
-		
+
+		z_interdite = self.creation_zone_interdite()
+
+		self.liste_zone_apparition(liste_des_zone = tout_les_couloirs, zone_interdite = z_interdite)
+
 		coordonnee = random.choice(tout_les_couloirs.tableau)
-		print(coordonnee)
+
 		self.modifier_la_valeur_aux_coordonnees(coordonnee = coordonnee, valeur = el_carte.Joueur(coordonnee = coordonnee))
-		
+
+
 
 if __name__ == '__main__':
 
