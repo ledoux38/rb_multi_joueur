@@ -47,7 +47,7 @@ class Carte:
 
 		self.nom = nom
 		
-		self.labyrinthe = tableau.Tableau(self.creer_labyrinthe_depuis_chaine(chaine))
+		self.labyrinthe = tableau.Tableau(self.initialisation(chaine))
 
 
 
@@ -63,7 +63,7 @@ class Carte:
 
 
 
-	def creer_labyrinthe_depuis_chaine(self,chaine):
+	def initialisation(self,chaine):
 		"""Méthode appelée quand on souhaite creer le labyrinthe"""
 		
 		#je cree une list de list pour cree le labyrinthre
@@ -73,7 +73,7 @@ class Carte:
 		
 		labyrinthe = []
 
-		#je remplit le tableau par des chaines de caracteres
+		#je remplis le tableau d'objets
 		for y,x in enumerate(i):
 
 			if x != "\n":
@@ -104,6 +104,13 @@ class Carte:
 				
 				ligne = []
 		
+		# mise en place des coordonnées dans les objets		
+		for Y,y in enumerate(labyrinthe):
+
+			for X,x in enumerate(y):
+
+				labyrinthe[Y][X].coordonnee = (Y,X)		
+
 		return labyrinthe
 
 
@@ -136,7 +143,7 @@ class Carte:
 					
 					if isinstance(retour, type(valeur)):
 					
-						liste.append((v, j))
+						liste.append((j, v))
 		
 		return liste
 
@@ -213,33 +220,17 @@ class Carte:
 
 
 
-	def initialisation_carte(self):
-		"""Méthode appelée quand on souhaite supprimer les joueurs existant sur la carte et positionner les joueurs aleatoirement"""
-		liste = self.rechercher_les_coordonnees_des_valeurs(valeur = el_carte.Joueur())
-
-		for i in liste:
-
-			self.modifier_la_valeur_aux_coordonnees(coordonnee = i, valeur = el_carte.Couloir())
-
-		for Y,y in enumerate(self.labyrinthe):
-
-			for X,x in enumerate(y):
-
-				self.labyrinthe[Y][X].coordonnee = (Y,X)
-
-
-
-	def liste_valeurs_par_lignes (self, tableau, valeur):
+	def liste_valeurs_par_lignes (self, valeur):
 		"""Méthode appelée quand on souhaite creer liste de zone d'apparition autorisé"""
 		liste = list()
 
 		ligne = list()
 
-		for j,y in enumerate(tableau):
+		for j,y in enumerate(self.labyrinthe):
 
 			for x in y:
-
-				if isinstance(x, type(valeur)):
+				#if isinstance(x, type(valeur)):
+				if type(x) == type(valeur):
 
 					ligne.append(x.coordonnee)
 
@@ -248,7 +239,7 @@ class Carte:
 				liste.append(ligne)
 
 			ligne = []
-
+			
 		return liste
 
 
@@ -256,7 +247,7 @@ class Carte:
 	def positionement_aleatoire(self):
 		"""Méthode appelée quand on souhaite faire un positionnement aleatoire des joueurs"""
 
-		liste_coordonnee = self.liste_valeurs_par_lignes(self.labyrinthe, el_carte.Couloir())
+		liste_coordonnee = self.liste_valeurs_par_lignes(el_carte.Couloir())
 
 		coordonnee = random.choice(liste_coordonnee[0])
 
@@ -273,7 +264,7 @@ if __name__ == '__main__':
 	print(a)
 	#print(a.rechercher_la_valeur_aux_coordonnees((0, 0)))
 	a.bordure_labyrinthe()
-	a.initialisation_carte()
+	#a.initialisation_carte()
 	print(a)
 	a.positionement_aleatoire()
 	print(a)
