@@ -47,19 +47,45 @@ class Carte:
 
 		self.nom = nom
 		
-		self.labyrinthe = tableau.Tableau(self.initialisation(chaine))
-
-
-
-	def __repr__(self):
-		return "<Carte {}>".format(self.nom)
+		self.labyrinthe = list(self.initialisation(chaine))
 
 
 
 	def __str__(self):
-		"""Méthode appelée quand on souhaite afficher la classe robot"""
+		"""Méthode appelée quand on souhaite afficher le tableau via un print()"""
+		
+		return self.tableau_en_str()
 
-		return "{}".format(self.labyrinthe)
+
+
+	def __getitem__(self, keys): 
+		"""Méthode appelée quand on souhaite recuperer une valeur d'un tableau"""
+		
+		return self.labyrinthe[keys]
+
+
+
+	def __setitem__(self, keys, valeur):
+		"""Méthode appelée quand on souhaite modifier une valeur d'un tableau"""
+		
+		self.labyrinthe[keys] = valeur
+
+
+
+	def tableau_en_str(self):
+		"""Méthode appelée quand on souhaite recuperer le tableau en chaine de caractere"""
+		
+		chaine=str()
+		
+		for j,y in enumerate(self.labyrinthe):
+			
+			for v,x in enumerate(y):
+				
+				chaine += str(self.labyrinthe[j][v])
+			
+			chaine +="\n"
+		
+		return chaine
 
 
 
@@ -115,18 +141,12 @@ class Carte:
 
 
 
-	def rechercher_la_valeur_aux_coordonnees(self,coordonnee):
-		"""on recupere la valeur directement au coordonnee choisi"""
-		valeur = self.labyrinthe[(coordonnee[0],coordonnee[1])]
-		
-		return valeur
+	def reinitialisation_des_coordonnees_des_objets(self):
+		for Y,y in enumerate(self.labyrinthe):
 
+			for X,x in enumerate(y):
 
-
-	def modifier_la_valeur_aux_coordonnees(self, valeur, coordonnee):
-		"""on modifie la valeur au coordonnée choisi"""
-
-		self.labyrinthe[(coordonnee[0],coordonnee[1])] = valeur
+				self.labyrinthe[Y][X].coordonnee = (Y,X)
 
 
 
@@ -139,7 +159,7 @@ class Carte:
 			
 			for v,x in enumerate(y):
 					
-					retour = self.labyrinthe[(j, v)]
+					retour = self.labyrinthe[j][v]
 					
 					if isinstance(retour, type(valeur)):
 					
@@ -164,23 +184,26 @@ class Carte:
 		for i, y in enumerate(self.labyrinthe):
 			#j'insert a l'index zero de chaque ligne une bordure
 			
-			self.labyrinthe.tableau[i].insert( 0, el_carte.Bordure())
+			self.labyrinthe[i].insert( 0, el_carte.Bordure())
 			
 			j = len(self.labyrinthe[i])
 
 			while j <= nombre:
 				#si les bordures sont irreguliere on rajoute des couloirs pour avoir une ligne droite
 				
-				self.labyrinthe.tableau[i].append(el_carte.Bordure())
+				self.labyrinthe[i].append(el_carte.Bordure())
 				
 				j += 1
 
 			#je rajoute la derniere bordure a la fin de chaque ligne
-			self.labyrinthe.tableau[i].append(el_carte.Bordure())
+			self.labyrinthe[i].append(el_carte.Bordure())
 
-		self.labyrinthe.tableau.insert( 0, self.bordure_principale( nombre + 2 ) )
+		self.labyrinthe.insert( 0, self.bordure_principale( nombre + 2 ) )
 		
-		self.labyrinthe.tableau.append(self.bordure_principale( nombre +2 ) )
+		self.labyrinthe.append(self.bordure_principale( nombre +2 ) )
+
+		#reinitialisation des objets
+		self.reinitialisation_des_coordonnees_des_objets()
 
 
 
@@ -206,7 +229,7 @@ class Carte:
 
 			raise TypeError("erreur le typage de la variable coordonnee_utilisateur doit etre de type <tuple> et non <{}>".format(type(nom)))
 		
-		copie_labyrinthe = tableau.Tableau(self.labyrinthe.tableau)
+		copie_labyrinthe = copy.deepcopy(self.labyrinthe)
 
 		liste_coordonnees = list(self.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
 
@@ -216,7 +239,18 @@ class Carte:
 				
 				copie_labyrinthe[coordonnee[0]][coordonnee[1]] = el_carte.Autres_joueurs()
 
-		return copie_labyrinthe.tableau_en_str()
+		chaine=str()
+
+		for j,y in enumerate(copie_labyrinthe):
+
+			for v,x in enumerate(y):
+
+				chaine += str(copie_labyrinthe[j][v])
+
+			chaine +="\n"
+
+		return chaine
+
 
 
 
@@ -239,7 +273,7 @@ class Carte:
 				liste.append(ligne)
 
 			ligne = []
-			
+
 		return liste
 
 
@@ -251,7 +285,7 @@ class Carte:
 
 		coordonnee = random.choice(liste_coordonnee[0])
 
-		self.modifier_la_valeur_aux_coordonnees(coordonnee = coordonnee, valeur = el_carte.Joueur(coordonnee = coordonnee))
+		self.labyrinthe[coordonnee[0]][coordonnee[1]] = el_carte.Joueur(coordonnee = coordonnee)
 
 
 
@@ -262,14 +296,13 @@ if __name__ == '__main__':
 	nom_labyrinthe = a[0]
 	a = Carte(nom_labyrinthe, labyrinthe)
 	print(a)
-	#print(a.rechercher_la_valeur_aux_coordonnees((0, 0)))
 	a.bordure_labyrinthe()
 	#a.initialisation_carte()
 	print(a)
 	a.positionement_aleatoire()
 	print(a)
 	#print(a)
-	#a.modifier_la_valeur_aux_coordonnees(el_carte.Couloir(), (0, 0))
+
 	#print(a)
 	
 	#print(a.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
