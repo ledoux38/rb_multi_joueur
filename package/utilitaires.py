@@ -22,7 +22,6 @@ def validation_de_la_saisie(reponse, list_action, longueur_reponse = 1):
 		return False
 
 
-
 def conversion_saisie_en_majuscule(chaine):
 	"""fonction qui permet de convertir des lettre en majuscule"""
 	#verification du typage du parametre
@@ -36,7 +35,7 @@ def conversion_saisie_en_majuscule(chaine):
 
 #non utilisée
 def choix_utilisateur(chaine_question, choix_caractere = "NCQ", chaine_input = "votre reponse? ",longueur = 1):
-	"""classe qui propose des choix a l'utilisateur"""
+	"""fonction qui propose des choix a l'utilisateur"""
 	if not isinstance(chaine_question,str) or not isinstance(choix_caractere, str) or not isinstance(longueur,int):
 		raise TypeError("erreur de typage dans un des parametres transmit")
 
@@ -57,7 +56,7 @@ def choix_utilisateur(chaine_question, choix_caractere = "NCQ", chaine_input = "
 
 
 def interation_utilisateur(phrase_principale, action, phrase_de_fin= "votre reponse? "):
-	"""classe qui propose des choix a l'utilisateur"""
+	"""fonction qui propose des choix a l'utilisateur"""
 
 	if not isinstance(phrase_principale, str):
 		raise TypeError("erreur parametre <phrase_principale> type str ")
@@ -148,7 +147,6 @@ def interation_utilisateurV2(phrase_principale, action, phrase_de_fin= "votre re
 
 	else:
 		raise TypeError("erreur parametre <action> doit etre de type <dict> ou <list> ")
-
 
 
 
