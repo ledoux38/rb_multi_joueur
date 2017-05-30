@@ -14,15 +14,10 @@ except:
 
 
 try:
-	import package.elements_de_carte as el_carte
+	import package.elements_de_carte as e_c
 except:
-	import elements_de_carte as el_carte
+	import elements_de_carte as e_c
 
-
-try:
-	import package.tableau 
-except:
-	import tableau
 
 import copy
 
@@ -106,23 +101,23 @@ class Carte:
 				
 				if x == "O":
 				
-					ligne.append(el_carte.Mur())
+					ligne.append(e_c.Obstacle())
 				
 				elif x == " ":
 				
-					ligne.append(el_carte.Couloir())
+					ligne.append(e_c.Couloir())
 				
 				elif x == ".":
 				
-					ligne.append(el_carte.Porte())
+					ligne.append(e_c.Porte())
 				
 				elif x == "U":
 				
-					ligne.append(el_carte.Sortie())
+					ligne.append(e_c.Sortie())
 				
 				else:
 				
-					ligne.append(el_carte.Couloir())
+					ligne.append(e_c.Couloir())
 
 			else:
 				
@@ -184,19 +179,19 @@ class Carte:
 		for i, y in enumerate(self.labyrinthe):
 			#j'insert a l'index zero de chaque ligne une bordure
 			
-			self.labyrinthe[i].insert( 0, el_carte.Bordure())
+			self.labyrinthe[i].insert( 0, e_c.Obstacle())
 			
 			j = len(self.labyrinthe[i])
 
 			while j <= nombre:
 				#si les bordures sont irreguliere on rajoute des couloirs pour avoir une ligne droite
 				
-				self.labyrinthe[i].append(el_carte.Bordure())
+				self.labyrinthe[i].append(e_c.Obstacle())
 				
 				j += 1
 
 			#je rajoute la derniere bordure a la fin de chaque ligne
-			self.labyrinthe[i].append(el_carte.Bordure())
+			self.labyrinthe[i].append(e_c.Obstacle())
 
 		self.labyrinthe.insert( 0, self.bordure_principale( nombre + 2 ) )
 		
@@ -215,7 +210,7 @@ class Carte:
 		
 		while i <= taille-1:
 		
-			bordure.append(el_carte.Bordure())
+			bordure.append(e_c.Obstacle())
 		
 			i += 1
 		
@@ -231,13 +226,13 @@ class Carte:
 		
 		copie_labyrinthe = copy.deepcopy(self.labyrinthe)
 
-		liste_coordonnees = list(self.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
+		liste_coordonnees = list(self.rechercher_les_coordonnees_des_valeurs(e_c.Joueur()))
 
 		for coordonnee in liste_coordonnees:
 			
 			if coordonnee != coordonnee_utilisateur:
 				
-				copie_labyrinthe[coordonnee[0]][coordonnee[1]] = el_carte.Autres_joueurs()
+				copie_labyrinthe[coordonnee[0]][coordonnee[1]] = e_c.Autres_joueurs()
 
 		chaine=str()
 
@@ -278,14 +273,57 @@ class Carte:
 
 
 
-	def positionement_aleatoire(self):
+	def positionement_aleatoire(self, joueur):
 		"""Méthode appelée quand on souhaite faire un positionnement aleatoire des joueurs"""
 
-		liste_coordonnee = self.liste_valeurs_par_lignes(el_carte.Couloir())
+		liste_coordonnee = self.liste_valeurs_par_lignes(e_c.Couloir())
 
 		coordonnee = random.choice(liste_coordonnee[0])
 
-		self.labyrinthe[coordonnee[0]][coordonnee[1]] = el_carte.Joueur(coordonnee = coordonnee)
+		joueur.coordonnee = coordonnee
+
+		self.labyrinthe[coordonnee[0]][coordonnee[1]] = joueur
+
+
+	def liste_coordonne_en_point_cardinaux(self, coordonnee):
+		liste = []
+		#NORD
+		if isinstance(self.labyrinthe[coordonnee[0]-1][coordonnee[1]], e_c.Couloir):
+
+			liste.append(True)
+
+		else:
+
+			liste.append(False)
+
+		#EST
+		if isinstance(self.labyrinthe[coordonnee[0]][coordonnee[1]+1], e_c.Couloir):
+
+			liste.append(True)
+
+		else:
+
+			liste.append(False)
+
+		#SUD
+		if isinstance(self.labyrinthe[coordonnee[0]+1][coordonnee[1]], e_c.Couloir):
+
+			liste.append(True)
+
+		else:
+
+			liste.append(False)
+
+		#OUEST
+		if isinstance(self.labyrinthe[coordonnee[0]][coordonnee[1]-1], e_c.Couloir):
+
+			liste.append(True)
+
+		else:
+
+			liste.append(False)
+
+		return liste
 
 
 
@@ -305,7 +343,7 @@ if __name__ == '__main__':
 
 	#print(a)
 	
-	#print(a.rechercher_les_coordonnees_des_valeurs(el_carte.Joueur()))
+	#print(a.rechercher_les_coordonnees_des_valeurs(e_c.Joueur()))
 	#print(a.carte_utilisateur((4, 9)))
 	#print(a.labyrinthe)
 	"""
@@ -313,7 +351,7 @@ if __name__ == '__main__':
 	for j,y in enumerate(i):
 		for v,x in enumerate(y):
 			if x == "0":
-				i[j][v] = (el_carte.Mur((j, v)))
+				i[j][v] = (e_c.Obstacle((j, v)))
 	
 	for x in i:
 		for y in x:
