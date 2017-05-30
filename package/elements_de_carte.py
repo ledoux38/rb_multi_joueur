@@ -30,7 +30,7 @@ class Joueur(Elements_de_carte):
 	def __init__(self, coordonnee = (0, 0)):
 		Elements_de_carte.__init__(self, coordonnee = coordonnee)
 		self.forme = "X"
-		self.element_avant_nouvelle_position = Couloir(coordonnee = coordonnee)
+		self.element_nouvelle_position = Couloir(coordonnee = coordonnee)
 
 
 class Autres_joueurs(Elements_de_carte):
@@ -40,18 +40,11 @@ class Autres_joueurs(Elements_de_carte):
 
 
 
-class Mur(Elements_de_carte):
+class Obstacle(Elements_de_carte):
 	def __init__(self):
 		Elements_de_carte.__init__(self)
 		self.forme = "O"
-		self.destructible = True
-
-
-
-class Bordure(Elements_de_carte):
-	def __init__(self):
-		Elements_de_carte.__init__(self)
-		self.forme = "O"
+		self.destructible = False
 
 
 
