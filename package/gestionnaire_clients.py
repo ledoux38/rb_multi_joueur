@@ -21,21 +21,17 @@ class Gestionnaire_clients:
 		"""instancie le Gestionnaire_clients.
 		le Gestionnaire_clients est representer sous la forme d'un tableau qui contiendra des données de type Connexion
 		"""
-		self._tableau_de_connexions = []
-
-
-	def __del__(self):
-		"""Méthode appelée quand on souhaite supprimer la classe Gestionnaire_clients
-		l'objectif et de pouvoir fermer les connexion une à une du tableau pour ensuite fermer integralement la classe"""
-		#for clients in self._tableau_de_connexions:
-		pass
+		self.tableau_de_connexions = []
 
 
 
 	def __str__(self):
 		"""Méthode appelée quand on souhaite afficher la classe robot"""
+		
 		msg = "clients: \n"
-		for num, clients in enumerate(self._tableau_de_connexions):
+		
+		for num, clients in enumerate(self.tableau_de_connexions):
+			
 			msg += "{}: {} \n".format(num, clients)
 
 		return msg
@@ -43,9 +39,10 @@ class Gestionnaire_clients:
 
 
 	def __iadd__(self, nouvelle_connexion):
-		print("coucou")
 		"""Cette méthode spéciale est appelée quand on fait une operation de type +="""
+		
 		self.ajouter_connexion(nouvelle_connexion)
+		
 		return self
 
 
@@ -55,39 +52,28 @@ class Gestionnaire_clients:
 		"""Cette méthode spéciale est appelée quand on fait objet[index]
 		Elle redirige vers self._dictionnaire[index]"""
 
-		connexion = self._tableau_de_connexions[index]
-		print("on demande l'index[{}]".format(type(connexion)))
-		return connexion._information_connexion
+		connexion = self.tableau_de_connexions[index]
+
+		return connexion.information_connexion
+
+
+
+	def __len__(self):
+		"""methode appeler lorsque on veut connaitre la taille du tableau"""
+		return len(self.tableau_de_connexions)
 		
-
-	def _get_tableau_de_connexions(self):
-		return self._tableau_de_connexions
-
-
-
-	def _set_tableau_de_connexions(self, nouvelle_connexion):
-		#if isinstance(nouvelle_connexion, list):
-		#	raise TypeError("""Erreur le parametre nouvelle_connexion n'est pas de type list mais de type {}""".format(type(nouvelle_connexion)))
-		#self._tableau_de_connexions.append(cn.Connexion(connexion = nouvelle_connexion))
-		pass
 
 
 	def ajouter_connexion(self, nouvelle_connexion):
-		#self._tableau_de_connexions.append(nouvelle_connexion)
-		self._tableau_de_connexions.append(cn.Connexion(connexion = nouvelle_connexion))
+		"""methode appeler lorsque on veut ajouter une connexion au tableau"""
+		
+		self.tableau_de_connexions.append(cn.Connexion(connexion = nouvelle_connexion))
 
 
 
-
-	def recuperer_connexion(self, index):
-		print("on demande l'index[{}]".format(index))
-		connexion = self._tableau_de_connexions[index]
-		a = connexion._information_connexion		
-		return a
-
-
-	tableau_de_connexions = property(fget = _get_tableau_de_connexions, fset = _set_tableau_de_connexions)
-
+	def supprimer_connexion(self, index):
+		"""methode appeler lorsque on veut supprimer une connexion au tableau"""
+		del self.tableau_de_connexions[index]
 
 
 if __name__ == "__main__":
