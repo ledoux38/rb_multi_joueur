@@ -126,7 +126,6 @@ class Application_labyrinthe:
 
 
 
-
 	def mouvement_joueur(self, joueur, mouvement):
 		"""fonction qui va deplacer le joueurs sur la carte"""
 		"""
@@ -196,10 +195,19 @@ class Application_labyrinthe:
 
 
 
-
 	def verification_de_victoire(self):
 		"""fonction qui à pour but de verifier si il y a victoire"""
-		pass
+
+		liste = self.carte.rechercher_liste_valeurs(e_c.Joueur())
+
+		for joueur in liste:
+
+			if joueur.coordonnee == self.carte.coord_sortie:
+
+				return joueur
+
+		return None
+
 
 if __name__ == '__main__':
 	a = Application_labyrinthe()

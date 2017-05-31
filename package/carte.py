@@ -44,6 +44,7 @@ class Carte:
 		
 		self.labyrinthe = list(self.initialisation(chaine))
 
+		self.coord_sortie = self.rechercher_les_coordonnees_des_valeurs(e_c.Sortie())[0]
 
 
 	def __str__(self):
@@ -164,6 +165,25 @@ class Carte:
 
 
 
+	def rechercher_liste_valeurs(self, valeur):
+		"""retourne les coordonnee de la valeur trouvé."""
+
+		liste = list()
+		
+		for j,y in enumerate(self.labyrinthe):
+			
+			for v,x in enumerate(y):
+					
+					retour = self.labyrinthe[j][v]
+					
+					if isinstance(retour, type(valeur)):
+					
+						liste.append(retour)
+		
+		return liste
+
+
+
 	def bordure_labyrinthe(self):
 		"""Méthode appelée quand on souhaite creer une bordure sur l'extremité du labyrinthe"""
 
@@ -248,7 +268,6 @@ class Carte:
 
 
 
-
 	def liste_valeurs_par_lignes (self, valeur):
 		"""Méthode appelée quand on souhaite creer liste de zone d'apparition autorisé"""
 		liste = list()
@@ -283,6 +302,7 @@ class Carte:
 		joueur.coordonnee = coordonnee
 
 		self.labyrinthe[coordonnee[0]][coordonnee[1]] = joueur
+
 
 
 	def liste_coordonne_en_point_cardinaux(self, coordonnee):
