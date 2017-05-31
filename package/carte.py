@@ -44,7 +44,7 @@ class Carte:
 		
 		self.labyrinthe = list(self.initialisation(chaine))
 
-		self.coord_sortie = self.rechercher_les_coordonnees_des_valeurs(e_c.Sortie())[0]
+		self.coord_sortie = self.rechercher_les_coordonnees_des_valeurs(e_c.Sortie())
 
 
 	def __str__(self):
@@ -160,8 +160,13 @@ class Carte:
 					if isinstance(retour, type(valeur)):
 					
 						liste.append((j, v))
-		
-		return liste
+
+		if len(liste) > 1:
+
+			return liste
+
+		else:
+			return liste[0]
 
 
 
@@ -179,7 +184,14 @@ class Carte:
 					if isinstance(retour, type(valeur)):
 					
 						liste.append(retour)
-		
+
+		if len(liste) > 1:
+
+			return liste
+
+		else:
+			return liste[0]	
+
 		return liste
 
 

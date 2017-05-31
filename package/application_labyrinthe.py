@@ -200,11 +200,19 @@ class Application_labyrinthe:
 
 		liste = self.carte.rechercher_liste_valeurs(e_c.Joueur())
 
-		for joueur in liste:
+		if isinstance(liste, list):
 
-			if joueur.coordonnee == self.carte.coord_sortie:
+			for joueur in liste:
 
-				return joueur
+				if joueur.coordonnee == self.carte.coord_sortie:
+
+					return joueur
+
+		else:
+
+			if liste.coordonnee == self.carte.coord_sortie:
+
+				return liste
 
 		return None
 
