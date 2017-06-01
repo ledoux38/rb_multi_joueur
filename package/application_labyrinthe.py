@@ -128,54 +128,23 @@ class Application_labyrinthe:
 
 	def mouvement_joueur(self, joueur, mouvement):
 		"""fonction qui va deplacer le joueurs sur la carte"""
-		"""
-		1-reuperation case joueur
-		2-recuperation case avant mouvement
-		3-conversion des cases (nouvelle case joueur et encienne case restituer)
-		"""
-		coordonnee_joueur = joueur.coordonnee
 
-		print("mouvement_joueur", coordonnee_joueur)
+		if not mouvement in "NSEW":
+			raise ValueError( "mouvement != 'NSEW' ")
+
+		coordonnee_joueur = joueur.coordonnee
 
 		objet = None
 
 		coord = None
 
-		if mouvement == "N":
+		dictionnaire = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
 
-			objet = self.carte[coordonnee_joueur[0]-1][coordonnee_joueur[1]]
 
-			coord = (coordonnee_joueur[0]-1, coordonnee_joueur[1])
+		objet = self.carte [coordonnee_joueur[0] + dictionnaire[mouvement][0] ] [coordonnee_joueur[1] + dictionnaire[mouvement][1] ]
 
-			print("N")
-		
-		if mouvement == "E":
+		coord = objet.coordonnee
 
-			objet = self.carte[coordonnee_joueur[0]][coordonnee_joueur[1]+1]
-
-			coord = (coordonnee_joueur[0],coordonnee_joueur[1]+1)
-
-			print("E")
-
-		if mouvement == "S":
-
-			objet = self.carte[coordonnee_joueur[0]+1][coordonnee_joueur[1]]
-
-			coord = (coordonnee_joueur[0]+1,coordonnee_joueur[1])
-
-			print("S")
-
-		if mouvement == "O":
-
-			objet = self.carte[coordonnee_joueur[0]][coordonnee_joueur[1]-1]
-
-			coord = (coordonnee_joueur[0],coordonnee_joueur[1]-1)
-
-			print("O")
-
-		#else:
-
-			#raise ValueError("Erreur < mouvement > les valeurs doivent etres comprises entre 'N' 'S' 'E' 'O' ")
 
 		if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie):
 
