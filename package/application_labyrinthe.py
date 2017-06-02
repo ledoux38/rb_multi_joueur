@@ -26,6 +26,13 @@ try:
 except:
 	import elements_de_carte as e_c
 
+try:
+	import package.sauvegarde_tmp as s_p
+except:
+	import sauvegarde_tmp as s_p
+
+import copy
+
 
 class Application_labyrinthe:
 
@@ -136,28 +143,29 @@ class Application_labyrinthe:
 
 		objet = None
 
-		coord = None
+		#coord = None
 
 		dictionnaire = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
 
 
 		objet = self.carte [coordonnee_joueur[0] + dictionnaire[mouvement][0] ] [coordonnee_joueur[1] + dictionnaire[mouvement][1] ]
 
-		coord = objet.coordonnee
+		#coord = objet.coordonnee
 
 
 		if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie):
 
-			encienne_valeur = joueur.element_nouvelle_position
+			sauve_tmp = s_p.sauvegarde_tmp(joueur, objet)
 			
 			joueur.coordonnee = objet.coordonnee
 
 			joueur.element_nouvelle_position = objet
 
-			self.carte[coord[0]][coord[1]] = joueur
+			self.carte[joueur.coordonnee[0]][joueur.coordonnee[1]] = joueur
 
-			self.carte[coordonnee_joueur[0]][coordonnee_joueur[1]] = encienne_valeur
+			self.carte[sauve_tmp[0].element_nouvelle_position.coordonnee[0]][sauve_tmp[0].element_nouvelle_position.coordonnee[1]] = sauve_tmp[0].element_nouvelle_position
 
+			del sauve_tmp
 		else:
 
 			raise TypeError("Erreur objet carte != e_c.Couloir")

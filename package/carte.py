@@ -302,6 +302,8 @@ class Carte:
 
 		joueur.coordonnee = coordonnee
 
+		joueur.element_nouvelle_position.coordonnee = coordonnee
+
 		self.labyrinthe[coordonnee[0]][coordonnee[1]] = joueur
 
 
