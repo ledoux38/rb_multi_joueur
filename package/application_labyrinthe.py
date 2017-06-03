@@ -61,6 +61,7 @@ class Application_labyrinthe:
 		return len(self.g_clients)
 
 
+
 	def choix_carte(self):
 		"""fonction qui permet de préparer une chaine de caractere à envoyer au joueur pour le choix de la carte"""
 		es = g_e_s.Gestionnaire_entree_sortie_donnee.static_RecupList(self.ch_dossier)
@@ -113,21 +114,9 @@ class Application_labyrinthe:
 
 		chaine = "proposition de deplacement:\n"
 
-		if liste[0]:
+		for mvt in liste:
 
-			chaine += "<N> NORD\n"
-
-		if liste[1]:
-
-			chaine += "<E> EST\n"
-
-		if liste[2]:
-
-			chaine += "<S> SUD\n"
-
-		if liste[3]:
-
-			chaine += "<O> OUEST\n"
+			chaine += "{}".format(mvt)
 
 		return chaine
 
@@ -139,33 +128,27 @@ class Application_labyrinthe:
 		if not mouvement in "NSEW":
 			raise ValueError( "mouvement != 'NSEW' ")
 
-		coordonnee_joueur = joueur.coordonnee
+		coord_j = joueur.coordonnee
 
-		objet = None
+		obj = None
 
-		#coord = None
-
-		dictionnaire = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
+		dic = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
 
 
-		objet = self.carte [coordonnee_joueur[0] + dictionnaire[mouvement][0] ] [coordonnee_joueur[1] + dictionnaire[mouvement][1] ]
+		obj = self.carte [coord_j[0] + dic[mouvement][0] ] [coord_j[1] + dic[mouvement][1] ]
 
-		#coord = objet.coordonnee
+		if isinstance(obj, e_c.Couloir) or isinstance(obj, e_c.Porte) or isinstance(obj, e_c.Sortie):
 
-
-		if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie):
-
-			sauve_tmp = s_p.sauvegarde_tmp(joueur, objet)
+			copie_objet = copy.deepcopy(joueur.element_nouvelle_position)
 			
-			joueur.coordonnee = objet.coordonnee
+			joueur.coordonnee = obj.coordonnee
 
-			joueur.element_nouvelle_position = objet
+			joueur.element_nouvelle_position = obj
 
 			self.carte[joueur.coordonnee[0]][joueur.coordonnee[1]] = joueur
 
-			self.carte[sauve_tmp[0].element_nouvelle_position.coordonnee[0]][sauve_tmp[0].element_nouvelle_position.coordonnee[1]] = sauve_tmp[0].element_nouvelle_position
+			self.carte[copie_objet.coordonnee[0]][copie_objet.coordonnee[1]] = copie_objet
 
-			del sauve_tmp
 		else:
 
 			raise TypeError("Erreur objet carte != e_c.Couloir")

@@ -89,6 +89,14 @@ class Carte:
 		"""Méthode appelée quand on souhaite creer le labyrinthe"""
 		
 		#je cree une list de list pour cree le labyrinthre
+
+		dictionnaire = {" ": e_c.Couloir(), 
+						".": e_c.Porte(), 
+						"U": e_c.Sortie(), 
+						"O": e_c.Obstacle(), 
+						"X": e_c.Couloir()
+						}
+
 		i = chaine + "\n"
 		
 		ligne = []
@@ -96,6 +104,26 @@ class Carte:
 		labyrinthe = []
 
 		#je remplis le tableau d'objets
+		
+		for x in i:
+
+			if x != "\n":
+				try:
+					ligne.append(copy.deepcopy(dictionnaire[x]))
+					#print(dictionnaire[x])
+
+				except KeyError:
+
+					ligne.append(copy.deepcopy(dictionnaire[" "]))
+				
+			else:
+				
+				labyrinthe.append(ligne)
+				
+				ligne = []
+		
+
+		"""
 		for y,x in enumerate(i):
 
 			if x != "\n":
@@ -125,6 +153,7 @@ class Carte:
 				labyrinthe.append(ligne)
 				
 				ligne = []
+		"""
 		
 		# mise en place des coordonnées dans les objets		
 		for Y,y in enumerate(labyrinthe):
@@ -309,42 +338,19 @@ class Carte:
 
 
 	def liste_coordonne_en_point_cardinaux(self, coordonnee):
+		"""Méthode appelée quand on souhaite connaitre les chemins de passage valide"""
+
 		liste = []
-		#NORD
-		if isinstance(self.labyrinthe[coordonnee[0]-1][coordonnee[1]], e_c.Couloir):
 
-			liste.append(True)
+		dictionnaire = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
 
-		else:
+		for mouvement in "NESO":
 
-			liste.append(False)
+			objet = self.labyrinthe [coordonnee[0] + dictionnaire[mouvement][0] ] [coordonnee[1] + dictionnaire[mouvement][1] ]
+			
+			if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie) :
 
-		#EST
-		if isinstance(self.labyrinthe[coordonnee[0]][coordonnee[1]+1], e_c.Couloir):
-
-			liste.append(True)
-
-		else:
-
-			liste.append(False)
-
-		#SUD
-		if isinstance(self.labyrinthe[coordonnee[0]+1][coordonnee[1]], e_c.Couloir):
-
-			liste.append(True)
-
-		else:
-
-			liste.append(False)
-
-		#OUEST
-		if isinstance(self.labyrinthe[coordonnee[0]][coordonnee[1]-1], e_c.Couloir):
-
-			liste.append(True)
-
-		else:
-
-			liste.append(False)
+				liste.append("<{}>".format(mouvement))
 
 		return liste
 
