@@ -44,7 +44,11 @@ class Carte:
 		
 		self.labyrinthe = list(self.initialisation(chaine))
 
-		self.coord_sortie = self.rechercher_les_coordonnees_des_valeurs(e_c.Sortie())[0]
+		self.bordure_labyrinthe()
+
+		self.sortie = self.rechercher_liste_valeurs(e_c.Sortie())[0]
+
+		self.list_posit_joueur = self.graphe_de_sommet()
 
 
 	def __str__(self):
@@ -103,8 +107,7 @@ class Carte:
 		
 		labyrinthe = []
 
-		#je remplis le tableau d'objets
-		
+		#je remplis le tableau d'objets	
 		for x in i:
 
 			if x != "\n":
@@ -120,47 +123,7 @@ class Carte:
 				
 				labyrinthe.append(ligne)
 				
-				ligne = []
-		
-
-		"""
-		for y,x in enumerate(i):
-
-			if x != "\n":
-				
-				if x == "O":
-				
-					ligne.append(e_c.Obstacle())
-				
-				elif x == " ":
-				
-					ligne.append(e_c.Couloir())
-				
-				elif x == ".":
-				
-					ligne.append(e_c.Porte())
-				
-				elif x == "U":
-				
-					ligne.append(e_c.Sortie())
-				
-				else:
-				
-					ligne.append(e_c.Couloir())
-
-			else:
-				
-				labyrinthe.append(ligne)
-				
-				ligne = []
-		"""
-		
-		# mise en place des coordonnées dans les objets		
-		for Y,y in enumerate(labyrinthe):
-
-			for X,x in enumerate(y):
-
-				labyrinthe[Y][X].coordonnee = (Y,X)		
+				ligne = []		
 
 		return labyrinthe
 
@@ -191,7 +154,6 @@ class Carte:
 						liste.append((j, v))
 
 		return liste
-
 
 
 
@@ -327,6 +289,14 @@ class Carte:
 
 		liste_coordonnee = self.liste_valeurs_par_lignes(e_c.Couloir())
 
+		for liste in liste_coordonnee:
+
+			for i in liste:
+
+				if not i in self.list_posit_joueur:
+
+					liste.remove(i)
+
 		coordonnee = random.choice(liste_coordonnee[0])
 
 		joueur.coordonnee = coordonnee
@@ -337,22 +307,98 @@ class Carte:
 
 
 
-	def liste_coordonne_en_point_cardinaux(self, coordonnee):
+	def liste_coordonne_en_point_cardinaux(self, coord):
 		"""Méthode appelée quand on souhaite connaitre les chemins de passage valide"""
 
 		liste = []
 
-		dictionnaire = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
+		dic = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
 
-		for mouvement in "NESO":
+		for mvt in "NESO":
 
-			objet = self.labyrinthe [coordonnee[0] + dictionnaire[mouvement][0] ] [coordonnee[1] + dictionnaire[mouvement][1] ]
+			objet = self.labyrinthe [coord[0] + dic[mvt][0] ] [coord[1] + dic[mvt][1] ]
 			
 			if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie) :
 
-				liste.append("<{}>".format(mouvement))
+				liste.append("<{}>".format(mvt))
 
 		return liste
+
+
+
+	def liste_valeur_en_point_cardinaux(self, coord):
+		"""Méthode appelée quand on souhaite connaitre les chemins de passage valide"""
+
+		liste = []
+
+		dic = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
+
+		for mvt in "NESO":
+
+			objet = self.labyrinthe [coord[0] + dic[mvt][0] ] [coord[1] + dic[mvt][1] ]
+			
+			if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie) :
+
+				liste.append(objet.coordonnee)
+
+		return liste
+
+
+
+	def graphe_de_sommet(self):
+		liste_obj = []
+
+		dic = {}
+
+		liste_recherche = [ e_c.Couloir(), e_c.Porte(), e_c.Sortie() ]
+		#recuperation de tout les objets de type couloir, porte,sortie
+		for recherche in liste_recherche:
+
+			liste_obj.extend(self.rechercher_liste_valeurs(recherche))
+
+		#pour chaque case du tableau je vais cree une liste de voisin
+		for i in liste_obj:
+
+			dic[i.coordonnee] = self.liste_valeur_en_point_cardinaux(i.coordonnee)
+
+		#pour chaque case du dictionnaire je vais remonter le chemin
+		liste_dfs = self.dfs(dic, self.sortie.coordonnee)
+
+		liste = []
+
+		# je recupere chaque clee du dictionnaire retourné
+		for valeur in liste_dfs.keys():
+
+			liste.append(valeur)
+
+		return liste
+
+
+
+	def dfs(self, G, s) :
+
+		P,Q={s :None},[s]
+
+		while Q :
+
+			u=Q[-1]
+
+			R=[y for y in G[u] if y not in P]
+
+			if R :
+
+				v=random.choice(R)
+
+				P[v]=u
+
+				Q.append(v)
+
+			else :
+
+				Q.pop()
+
+		return P
+
 
 
 
@@ -364,28 +410,8 @@ if __name__ == '__main__':
 	a = Carte(nom_labyrinthe, labyrinthe)
 	print(a)
 	a.bordure_labyrinthe()
-	#a.initialisation_carte()
+
 	print(a)
 	a.positionement_aleatoire()
 	print(a)
-	#print(a)
-
-	#print(a)
-	
-	#print(a.rechercher_les_coordonnees_des_valeurs(e_c.Joueur()))
-	#print(a.carte_utilisateur((4, 9)))
-	#print(a.labyrinthe)
-	"""
-	i = [ ["0", "0", "0", "0", "0"], ["0", "0", "0", "0", "0"] ]
-	for j,y in enumerate(i):
-		for v,x in enumerate(y):
-			if x == "0":
-				i[j][v] = (e_c.Obstacle((j, v)))
-	
-	for x in i:
-		for y in x:
-			print (y)
-		print("\n")
-	print
-	"""
 
