@@ -6,6 +6,8 @@ try:
 except:
 	import elements_de_carte as e_c
 
+import unittest 
+
 class Connexion:
 
 	"""la classe Connexion et une classe qui est crée pour représenter un joueur. elle permet de créer une entitée de type Robot
@@ -37,11 +39,22 @@ class Connexion:
 
 
 
-if __name__ == "__main__":
+class test_serveur(unittest.TestCase):
 
-	a = Connexion()
-	print(a)
-	#a = Robot(coordonnee_XY = (2, 3))
-	#a.forme_joueur = "Y"
-	b = a.information_connexion
-	print(b)
+
+
+	def setUp(self):
+
+		self.a = cn.Connexion()
+
+
+
+	def tearDown(self):
+
+		print("\n")
+
+
+
+if __name__ == "__main__":
+	
+	unittest.main()
