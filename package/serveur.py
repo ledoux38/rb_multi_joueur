@@ -1,8 +1,10 @@
 #!/usr/bin/python3.5
 # -*-coding:Utf-8 -*
 
+import unittest
 
 import socket as st
+
 import select as sc
 
 try:
@@ -10,243 +12,160 @@ try:
 except:
 	import connexion as cn
 
+try:
+	import package.application_labyrinthe as a_l
+except:
+	import application_labyrinthe as a_l
 
 try:
 	import package.gestionnaire_clients as gs
 except:
 	import gestionnaire_clients as gs
 
+try:
+	import package.Gestionnaire_entree_sortie_donnee as g_e_s
+except:
+	import Gestionnaire_entree_sortie_donnee as g_e_s
+
+try:
+	import package.utilitaires as us
+except:
+	import utilitaires as us
+
 class Serveur:
 	"""la classe Serveur crée le serveur. elle gere les 
 	connexions et aussi le jeux en general
 
-	ATTRIBUTS:	- _tableau_de_connexions
+	ATTRIBUTS:	- app
 				- connexion
 
 	"""
 	def __init__(self, hote_serveur, port_serveur):
-		self._tableau_de_connexions = gs.Gestionnaire_clients()
+				
 		self.connexion = self.initialisation_connexion(hote = hote_serveur, port = port_serveur)
 
-
-
-	def __del__(self):
-		self.connexion.close()
-
-
-
-	def __str__(self):
-		msg = "{}, {}".format(self.connexion, self._tableau_de_connexions)
-		return msg
-
-
-
-	def _get_tableau_de_connexions(self):
-		return self._tableau_de_connexions
-
-
-
-	def _set_tableau_de_connexions(self, nouvelle_connexion):
-		self._tableau_de_connexions.ajouter_connexion(nouvelle_connexion)
+		self.app = a_l.Application_labyrinthe()
 
 
 
 	def initialisation_connexion(self, hote, port, listen = 5):
+	
 		connexion = st.socket(st.AF_INET, st.SOCK_STREAM)
+		
 		connexion.bind((hote, port))
+		
 		connexion.listen(listen)
+		
 		return connexion	
 
 
 
 	def emission_donnee(self, connexion, donnee):
+		
 		message_a_envoyer = str(donnee)
+		
 		message_a_envoyer = message_a_envoyer.encode()
+		
 		connexion.send(message_a_envoyer)
 
 
 
-
-
 	def reception_donnee(self, connexion, taille = 1024):
+		
 		message_recu =connexion.recv(taille)
-		print(message_recu.decode())
-
+		
+		return message_recu.decode()
 
 
 
 	def attente_de_connexion(self):
+		
 		connexion_client, info_client = self.connexion.accept()
-		self._tableau_de_connexions += connexion_client
-		#self._tableau_de_connexions.ajouter_connexion(connexion_client)
+		
+		self.app.g_clients.tableau_de_connexions.append(cn.Connexion(connexion = connexion_client))
 
 
-	tableau_de_connexions = property(fget = _get_tableau_de_connexions, fset = _set_tableau_de_connexions)
+	def jeux_labyrinthe(self):
 
+		self.attente_de_connexion()
+
+		nb_carte = g_e_s.Gestionnaire_entree_sortie_donnee.static_nombre_de_fichier(self.app.ch_dossier)
+
+		liste = str(list(range(nb_carte)))
+
+		erreur = False
+
+		while True:
+
+			self.emission_donnee(self.app.g_clients[0].information_connexion, self.app.choix_carte(erreur = erreur))
+
+			choix = self.reception_donnee(self.app.g_clients[0].information_connexion)
+			
+			if choix in liste:
+			
+				self.app.chargement_carte(choix)
+
+				break
+
+			else:
+
+				erreur = True
+
+		self.app.carte.positionement_aleatoire(self.app.g_clients[0].joueur)
+
+		while True:
+
+			prep_inter_utilisateur , liste = self.app.proposition_de_deplacement(self.app.g_clients[0].joueur)
+
+			self.emission_donnee(self.app.g_clients[0].information_connexion, prep_inter_utilisateur)
+
+			choix = self.reception_donnee(self.app.g_clients[0].information_connexion)
+
+			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = choix)
+
+			if reponse_joueur in liste: 
+			
+				self.app.mouvement_joueur(self.app.g_clients[0].joueur, reponse_joueur)
+
+			else:
+
+				print("erreur")
+
+
+
+
+class test_serveur (unittest.TestCase):
+
+	def setUp(self):
+
+		self.a = Serveur("127.0.0.1", 12100)
+
+
+
+	def tearDown(self):
+
+		for i in self.a.app.g_clients:
+
+			i.information_connexion.close()
+
+		self.a.connexion.close()
+
+
+
+	def test_jeux_labyrinthe(self):
+
+		self.a.jeux_labyrinthe()
+
+
+if __name__ == '__main__':
+
+	unittest.main()
+
+
+"""
 if __name__ == "__main__":
 	version = 5
 
-
-	#version tres basique d'un code de serveur
-	if version == 0:
-		
-
-		connexion_principale = st.socket(st.AF_INET, st.SOCK_STREAM)
-		connexion_principale.bind(("", 12800))
-
-		connexion_principale.listen(5)
-
-		connexion_client, info_client = connexion_principale.accept()
-
-		print("info_client: {}".format(info_client))
-
-		connexion_client.send(b"je viens de recevoir et d'accepter la connexion")
-
-		connexion_client.close()
-	
-
-
-	#version basique d'un echange de donnée avec un client
-	if version == 1:
-
-		try:
-			connexion_principale = st.socket(st.AF_INET, st.SOCK_STREAM)
-			connexion_principale.bind(("", 12800))
-			connexion_principale.listen(5)
-
-		except ConnectionRefusedError:
-			print("erreur lors du l'initialisation du serveur")
-
-		print("serveur lancé \n en attente d'une connexion au port: 12800")
-		connexion_client, info_client = connexion_principale.accept()
-		print(type(connexion_client))
-
-		message_recu = str()
-		while message_recu != b"fin":
-
-			message_recu = connexion_client.recv(1024)
-			#print(connexion_client)
-			print(message_recu.decode())
-
-			message_a_envoyer = "5/5"
-			message_a_envoyer = message_a_envoyer.encode()
-			connexion_client.send(message_a_envoyer)
-
-		print("fermeture de la connexion")
-
-		connexion_client.close()
-	
-
-
-	#version basique d'un echange de donnée avec plusieurs clients
-	if version == 2:
-
-		try:
-			connexion_principale = st.socket(st.AF_INET, st.SOCK_STREAM)
-			connexion_principale.bind(("", 12800))
-			connexion_principale.listen(5)
-
-
-		except ConnectionRefusedError:
-			print("erreur lors du l'initialisation du serveur")
-
-		serveur_lance = True
-		print("serveur lancé \n en attente d'une connexion au port: 12800")
-		clients_connectes = []
-
-		while serveur_lance:
-
-			connexions_demandees, wlist, xlist = sc.select([connexion_principale], [], [], 0.05)
-			#print (connexions_demandees, wlist, xlist, type(connexions_demandees), type(wlist), type(xlist))
-
-			for connexion in connexions_demandees:
-				connexions_clients, infos_connexion = connexion.accept()
-				clients_connectes.append(connexions_clients)
-
-			clients_a_lire = []
-
-			try:
-				clients_a_lire, wlist, xlist = sc.select(clients_connectes, [], [], 0.05)
-			except select.error:
-				pass
-
-			else:
-				for client in clients_a_lire:
-					message_recu = client.recv(1024)
-					message_recu = message_recu.decode()
-
-					print("recu {}".format(message_recu))
-					client.send(b"5/5")
-					if message_recu == "fin":
-						serveur_lance == False
-
-		print("fermeture des connexions")
-
-		for client in clients_connectes:
-			client.close()
-
-		connexion_principale.close()
-
-
-
-	#version basique d'un echange de donnée avec plusieurs clients
-	if version == 3:
-
-		try:
-			connexion_principale = st.socket(st.AF_INET, st.SOCK_STREAM)
-			connexion_principale.bind(("", 12800))
-			connexion_principale.listen(5)
-
-
-		except ConnectionRefusedError:
-			print("erreur lors du l'initialisation du serveur")
-
-		serveur_lance = True
-		print("serveur lancé \n en attente d'une connexion au port: 12800")
-		tableau_des_clients = gs.Gestionnaire_clients()
-		
-		#clients_connectes = []
-
-		while serveur_lance:
-
-			connexions_demandees, wlist, xlist = sc.select([connexion_principale], [], [], 0.05)
-			#print (connexions_demandees, wlist, xlist, type(connexions_demandees), type(wlist), type(xlist))
-
-			for connexion in connexions_demandees:
-				connexions_clients, infos_connexion = connexion.accept()
-				#print(clients_connectes, type(clients_connectes))
-				tableau_des_clients.ajouter_connexion(connexions_clients)
-				#clients_connectes.append(connexions_clients)
-				print(tableau_des_clients._tableau_de_connexions[0])
-				print(type(tableau_des_clients._tableau_de_connexions[0]))
-			clients_a_lire = []
-
-			try:
-				clients_a_lire, wlist, xlist = sc.select(tableau_des_clients._tableau_de_connexions, [], [], 0.05)
-				#clients_a_lire, wlist, xlist = sc.select(clients_connectes, [], [], 0.05)
-				#print(clients_connectes, type(clients_connectes))
-			except sc.error:
-				pass
-
-			else:
-				for client in clients_a_lire:
-					message_recu = client.recv(1024)
-					message_recu = message_recu.decode()
-
-					print("recu {}".format(message_recu))
-					client.send(b"5/5")
-					if message_recu == "fin":
-						serveur_lance == False
-
-		print("fermeture des connexions")
-
-		for client in clients_connectes:
-			client.close()
-
-		connexion_principale.close()
-
-
-	#version en class Serveur
 	if version == 5:
 		try:
 			a = Serveur("127.0.0.1", 12100)
@@ -261,8 +180,9 @@ if __name__ == "__main__":
 			while True:
 				a.attente_de_connexion()
 				a.attente_de_connexion()
-				a.reception_donnee(a._tableau_de_connexions[0])
-				a.emission_donnee(a._tableau_de_connexions[0], donnee = "coucou")
-				a.reception_donnee(a._tableau_de_connexions[1])
-				a.emission_donnee(a._tableau_de_connexions[1], donnee = "coucou")
-				#print(a._tableau_de_connexions[0])
+				a.reception_donnee(a.app[0])
+				a.emission_donnee(a.app[0], donnee = "coucou")
+				a.reception_donnee(a.app[1])
+				a.emission_donnee(a.app[1], donnee = "coucou")
+				#print(a.app[0])
+"""

@@ -1,9 +1,12 @@
 #!/usr/bin/python3.5
 # -*-coding:Utf-8 -*
 
+import unittest
 
 import socket as st
+
 import threading as tg
+
 import time 
 
 def ouverture_connexion(adresse, port):
@@ -31,60 +34,62 @@ def fermeture_connexion(connexion):
 
 
 
-if __name__ == "__main__":
-	version = 2
+class test_serveur (unittest.TestCase):
 
-	if version == 0:
-		connexion_serveur = st.socket(st.AF_INET, st.SOCK_STREAM)
-		connexion_serveur.connect(("localhost", 12800))
+	def setUp(self):
 
-		message_recu = connexion_serveur.recv(1024)
-		print(message_recu)
+		self.a = ouverture_connexion("127.0.0.1", 12100)
 
-		connexion_serveur.close()
 
-	if version == 1:
-		#version basique d'un echange de donnée avec un client
 
-		print("connexion au serveur...")
-		connexion_serveur = st.socket(st.AF_INET, st.SOCK_STREAM)
+	def tearDown(self):
 
-		try:
-			connexion_serveur.connect(("localhost", 12800))
-			connexion = True
-		except ConnectionRefusedError:
-			print("erreur le serveur est temporairement inaccessible...")
-			connexion = False
+		self.a.close()
 
+
+
+	def test_client(self):
+
+		message_a_envoyer = str()
 		
+		while message_a_envoyer != b"fin":
+
+			message_recu = reception_donnee(self.a)
 		
-		if connexion:
+			dialogue_utilisateur(message_recu, reponse = False)
+		
+			message_a_envoyer = dialogue_utilisateur()
+		
+			emission_donnee(message_a_envoyer, self.a)
 
-			message_a_envoyer = str()
 
-			while message_a_envoyer != b"fin":
-				message_a_envoyer = input(" > ")
-				message_a_envoyer = message_a_envoyer.encode()
-				connexion_serveur.send(message_a_envoyer)
+if __name__ == '__main__':
 
-				message_recu = connexion_serveur.recv(1024)
-				print(message_recu.decode())
+	unittest.main()
 
-			print("fermeture de la connection")
+	
 
-			connexion_serveur.close()
 
-	if version == 2:
+
+"""
+	if version == 3:
+		
 		connexion_au_serveur = ouverture_connexion("127.0.0.1", 12100)
 
 		message_a_envoyer = str()
-		while message_a_envoyer != b"fin":
-			message_a_envoyer = dialogue_utilisateur("utilisateur dit: \n")
-			emission_donnee(message_a_envoyer, connexion_au_serveur)
-			message_recu = reception_donnee(connexion_au_serveur)
-			dialogue_utilisateur(message_recu, reponse = False)
-
-		fermeture_connexion(connexion_au_serveur)
-
-
 		
+		while message_a_envoyer != b"fin":
+
+			message_recu = reception_donnee(connexion_au_serveur)
+		
+			dialogue_utilisateur(message_recu, reponse = False)
+		
+			message_a_envoyer = dialogue_utilisateur()
+		
+			emission_donnee(message_a_envoyer, connexion_au_serveur)
+		
+
+
+		fermeture_connexion(connexion_au_serveur)		
+
+"""

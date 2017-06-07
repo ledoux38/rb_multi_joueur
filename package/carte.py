@@ -319,7 +319,7 @@ class Carte:
 			
 			if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie) :
 
-				liste.append("<{}>".format(mvt))
+				liste.append("{}".format(mvt))
 
 		return liste
 

@@ -66,7 +66,7 @@ class Application_labyrinthe:
 
 
 
-	def choix_carte(self):
+	def choix_carte(self, erreur = False):
 		"""fonction qui permet de préparer une chaine de caractere à envoyer au joueur pour le choix de la carte"""
 		es = g_e_s.Gestionnaire_entree_sortie_donnee.static_RecupList(self.ch_dossier)
 		
@@ -78,11 +78,15 @@ class Application_labyrinthe:
 
 		texte_descriptif = "Bienvenue sur l'application l'Abyrinthe multi_joueurs.\n Veillez choisir la carte pour lancer la partie!\n{}".format(liste_str)
 		
+		if erreur:
+
+			texte_descriptif = "{} \n {}".format("Erreur lors de la saisi!", texte_descriptif)
+
 		return texte_descriptif
 
 
 
-	def validation_reponse_joueurs(self, reponse, action):
+	def validation_reponse_joueurs(self, reponse, action):	# inutilsé pour le moment
 		"""fonction qui va analyser la reponse pour verifier ça validiter"""
 		reponse_joueur = us.conversion_saisie_en_majuscule(chaine = reponse)
 
@@ -116,21 +120,21 @@ class Application_labyrinthe:
 
 		liste = self.carte.liste_coordonne_en_point_cardinaux(coord = joueur.coordonnee)
 
-		chaine = "proposition de deplacement:\n"
+		chaine = "{}\nproposition de deplacement:\n".format(self.carte.tableau_en_str())
 
 		for mvt in liste:
 
-			chaine += "{}".format(mvt)
+			chaine += "<{}> ".format(mvt)
 
-		return chaine
+		return chaine, liste
 
 
 
 	def mouvement_joueur(self, joueur, mouvement):
 		"""fonction qui va deplacer le joueurs sur la carte"""
 
-		if not mouvement in "NSEW":
-			raise ValueError( "mouvement != 'NSEW' ")
+		if not mouvement in "NSEO":
+			raise ValueError( "mouvement != 'NSEO' ")
 
 		coord_j = joueur.coordonnee
 
@@ -181,6 +185,59 @@ class Application_labyrinthe:
 		return None
 
 
+
+	def phase_deplacement_joueur(self, joueurs):
+
+		while True:
+
+			print(self.carte)
+
+			prep_inter_utilisateur , liste = self.proposition_de_deplacement(joueurs)
+
+			print(liste)
+
+			choix = input(prep_inter_utilisateur)
+
+			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = choix)
+
+			if reponse_joueur in liste: 
+			
+				self.mouvement_joueur(joueurs, reponse_joueur)
+
+				break
+
+			else:
+
+				print("Erreur lors de la saisie du choix \n recommencer!")		
+
+
+
+	def phase_choix_carte(self):
+
+		nb_carte = g_e_s.Gestionnaire_entree_sortie_donnee.static_nombre_de_fichier(self.ch_dossier)
+
+		liste = str(list(range(nb_carte)))
+
+		while True:
+
+			choix = input(self.choix_carte())
+
+			if choix in liste:
+			
+				self.chargement_carte(choix)
+
+				break
+
+			else:
+
+				print("Erreur lors de la saisie du choix \n recommencer!")
+
+
+
+
+
+
+
 class test_app_labyrinthe (unittest.TestCase):
 
 
@@ -213,7 +270,7 @@ class test_app_labyrinthe (unittest.TestCase):
 
 		self.classe_app_lab.g_clients += ["127.0.0.1",12800]
 
-		a = self.classe_app_lab.g_clients[0]
+		a = self.classe_app_lab.g_clients[0].information_connexion
 
 		self.assertEqual(["127.0.0.1",12800], a)
 
@@ -237,7 +294,7 @@ class test_app_labyrinthe (unittest.TestCase):
 
 		self.classe_app_lab.g_clients += ["127.0.0.1",12800]
 
-		a = self.classe_app_lab.g_clients[0]
+		a = self.classe_app_lab.g_clients[0].information_connexion
 
 		self.assertEqual(["127.0.0.1",12800], a)
 
@@ -263,6 +320,32 @@ class test_app_labyrinthe (unittest.TestCase):
 
 
 
+	def test_choix_carte(self):
+
+		retour = self.classe_app_lab.choix_carte()
+
+		retour_reel = """Bienvenue sur l'application l'Abyrinthe multi_joueurs.
+ Veillez choisir la carte pour lancer la partie!
+<0>: facile.txt
+<1>: test.txt
+<2>: prison.txt\n"""
+
+
+		self.assertEqual(retour, retour_reel)
+
+		retour = self.classe_app_lab.choix_carte(erreur = True)
+
+		retour_reel = """Erreur lors de la saisi! 
+ Bienvenue sur l'application l'Abyrinthe multi_joueurs.
+ Veillez choisir la carte pour lancer la partie!
+<0>: facile.txt
+<1>: test.txt
+<2>: prison.txt\n"""
+
+		self.assertEqual(retour, retour_reel)
+
+
+
 	def test_chargement_carte(self):
 
 		self.classe_app_lab.chargement_carte(choix = "0")
@@ -285,9 +368,7 @@ class test_app_labyrinthe (unittest.TestCase):
 
 		self.classe_app_lab.carte.positionement_aleatoire(joueur1)	
 
-		retour = self.classe_app_lab.proposition_de_deplacement(joueur1)
-
-		self.assertEqual(retour, "proposition de deplacement:\n<S>")
+		retour, liste = self.classe_app_lab.proposition_de_deplacement(joueur1)
 
 
 
@@ -319,6 +400,85 @@ class test_app_labyrinthe (unittest.TestCase):
 
 		self.assertEqual(type(victoire), type(e_c.Joueur()))
 
+
+	"""
+	def test_phase_choix_carte(self):
+
+		joueur1 = c_n.Connexion().joueur
+
+		self.classe_app_lab.phase_choix_carte()
+		
+	"""
+
+	"""
+	def test_phase_deplacement_joueur(self):
+		
+		joueur1 = c_n.Connexion().joueur
+
+		self.classe_app_lab.chargement_carte(choix = "1")
+		
+		self.classe_app_lab.carte.positionement_aleatoire(joueur1)
+
+		self.classe_app_lab.phase_deplacement_joueur(joueur1)
+
+		#print(self.classe_app_lab.carte)
+	"""
+
+	"""
+	def test_partie_simple_un_joueur(self):
+
+		a = Application_labyrinthe()
+
+		a.g_clients += c_n.Connexion()
+
+		a.g_clients += c_n.Connexion()
+		
+		a.phase_choix_carte()
+
+		a.carte.positionement_aleatoire(a.g_clients[0].joueur)
+
+		while True:
+
+			a.phase_deplacement_joueur(a.g_clients[0].joueur)
+
+			if a.g_clients[0].joueur.coordonnee == a.carte.sortie.coordonnee:
+
+				break
+
+		print("bravo !! ")
+	"""
+
+	"""
+	def test_partie_simple_deux_joueurs(self):
+
+		a = Application_labyrinthe()
+
+		a.g_clients += c_n.Connexion()
+
+		a.g_clients += c_n.Connexion()
+		
+		a.phase_choix_carte()
+
+		for i in a.g_clients:
+
+			a.carte.positionement_aleatoire(i.joueur)
+
+		while True:
+
+			a.phase_deplacement_joueur(a.g_clients[0].joueur)
+
+			if a.g_clients[0].joueur.coordonnee == a.carte.sortie.coordonnee:
+
+				break
+
+			a.phase_deplacement_joueur(a.g_clients[1].joueur)
+
+			if a.g_clients[1].joueur.coordonnee == a.carte.sortie.coordonnee:
+
+				break
+
+		print("bravo !! ")
+	"""
 
 
 if __name__ == "__main__":

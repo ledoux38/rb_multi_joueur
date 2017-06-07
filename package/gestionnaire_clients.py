@@ -54,7 +54,8 @@ class Gestionnaire_clients:
 
 		connexion = self.tableau_de_connexions[index]
 
-		return connexion.information_connexion
+		return connexion
+	
 
 
 
