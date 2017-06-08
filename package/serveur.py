@@ -107,6 +107,32 @@ class Serveur:
 				erreur = True
 
 
+	def phase_mouvement_joueur(self, connexion):
+
+		while True:
+
+			prep_inter_utilisateur , liste = self.app.proposition_de_deplacement(connexion.joueur)
+
+			self.emission_donnee(connexion.information_connexion, prep_inter_utilisateur)
+
+			choix = self.reception_donnee(connexion.information_connexion)
+
+			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = choix)
+
+			if reponse_joueur in liste: 
+			
+				self.app.mouvement_joueur(connexion.joueur, reponse_joueur)
+
+			if connexion.joueur.coordonnee == self.app.carte.sortie.coordonnee:
+
+				return True
+
+			else:
+
+				return False
+
+
+
 	def jeux_labyrinthe(self):
 
 		self.attente_de_connexion()
@@ -115,48 +141,19 @@ class Serveur:
 
 		liste = str(list(range(nb_carte)))
 
-		erreur = False
-
-		while True:
-
-			self.emission_donnee(self.app.g_clients[0].information_connexion, self.app.choix_carte(erreur = erreur))
-
-			choix = self.reception_donnee(self.app.g_clients[0].information_connexion)
-			
-			if choix in liste:
-			
-				self.app.chargement_carte(choix)
-
-				break
-
-			else:
-
-				erreur = True
+		self.phase_chargement_carte(self.app.g_clients[0], liste)
 
 		self.app.carte.positionement_aleatoire(self.app.g_clients[0].joueur)
 
 		while True:
 
-			prep_inter_utilisateur , liste = self.app.proposition_de_deplacement(self.app.g_clients[0].joueur)
+			if self.phase_mouvement_joueur(self.app.g_clients[0]):
 
-			self.emission_donnee(self.app.g_clients[0].information_connexion, prep_inter_utilisateur)
+				prep_inter_utilisateur = "felicitation vous avez gagné"
 
-			choix = self.reception_donnee(self.app.g_clients[0].information_connexion)
-
-			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = choix)
-
-			if reponse_joueur in liste: 
-			
-				self.app.mouvement_joueur(self.app.g_clients[0].joueur, reponse_joueur)
-
-			if self.app.g_clients[0].joueur.coordonnee == self.app.carte.sortie.coordonnee:
+				self.emission_donnee(self.app.g_clients[0].information_connexion, prep_inter_utilisateur)
 
 				break
-
-		prep_inter_utilisateur = "felicitation vous avez gagné"
-
-		self.emission_donnee(self.app.g_clients[0].information_connexion, prep_inter_utilisateur)
-
 
 
 class test_serveur (unittest.TestCase):
