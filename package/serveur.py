@@ -85,6 +85,28 @@ class Serveur:
 		self.app.g_clients.tableau_de_connexions.append(cn.Connexion(connexion = connexion_client))
 
 
+
+	def phase_chargement_carte(self, connexion, liste_choix):
+
+		erreur = False
+
+		while True:
+
+			self.emission_donnee(connexion.information_connexion, self.app.choix_carte(erreur = erreur))
+
+			choix = self.reception_donnee(connexion.information_connexion)
+			
+			if choix in liste_choix:
+			
+				self.app.chargement_carte(choix)
+
+				break
+
+			else:
+
+				erreur = True
+
+
 	def jeux_labyrinthe(self):
 
 		self.attente_de_connexion()
@@ -127,10 +149,13 @@ class Serveur:
 			
 				self.app.mouvement_joueur(self.app.g_clients[0].joueur, reponse_joueur)
 
-			else:
+			if self.app.g_clients[0].joueur.coordonnee == self.app.carte.sortie.coordonnee:
 
-				print("erreur")
+				break
 
+		prep_inter_utilisateur = "felicitation vous avez gagné"
+
+		self.emission_donnee(self.app.g_clients[0].information_connexion, prep_inter_utilisateur)
 
 
 
