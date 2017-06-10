@@ -5,9 +5,41 @@ import unittest
 
 import socket as st
 
-import threading as tg
+import threading
 
-import time 
+import time
+
+class ThreadReception(threading.Thread):
+	"""objet thread gérant la réception des messages"""
+	def __init__(self, conn):
+		threading.Thread.__init__(self)
+		self.connexion = conn	     # réf. du socket de connexion
+ 
+	def run(self):
+		print("run")
+		while 1:
+			message_recu = self.connexion.recv(1024).decode()
+			print("*" + message_recu + "*")
+			if not message_recu or message_recu.upper() =="FIN":
+				print("arret")
+				break
+			# Le thread <réception> se termine ici.
+			# On force la fermeture du thread <émission> :
+		#self._stop()
+		print("Client arrêté. Connexion interrompue.")
+		self.connexion.close()
+ 
+class ThreadEmission(threading.Thread):
+	"""objet thread gérant l'émission des messages"""
+	def __init__(self, conn):
+		threading.Thread.__init__(self)
+		self.connexion = conn	     # réf. du socket de connexion
+	 
+	def run(self):
+		while 1:
+			message_emis = input()
+			self.connexion.send(message_emis.encode())
+
 
 def ouverture_connexion(adresse, port):
 	connexion = st.socket(st.AF_INET, st.SOCK_STREAM)
@@ -48,7 +80,7 @@ class test_serveur (unittest.TestCase):
 
 
 
-	def test_client(self):
+	def client(self):
 
 		message_a_envoyer = str()
 		
@@ -63,9 +95,33 @@ class test_serveur (unittest.TestCase):
 			emission_donnee(message_a_envoyer, self.a)
 
 
+	def test_client_threader(self):
+		th_R = ThreadReception(self.a)
+
+		th_R.start()
+
+		th_E = ThreadEmission(self.a)
+
+		th_E.start()
+
+
+
+
+
 if __name__ == '__main__':
 
-	unittest.main()
+#	unittest.main()
+
+	a = ouverture_connexion("127.0.0.1", 12100)
+
+	th_R = ThreadReception(a)
+
+	th_R.start()
+
+	th_E = ThreadEmission(a)
+
+	th_E.start()
+
 
 	
 

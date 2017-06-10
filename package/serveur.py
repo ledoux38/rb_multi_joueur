@@ -135,7 +135,11 @@ class Serveur:
 
 	def jeux_labyrinthe(self):
 
+		print("serveur lancer")
+
 		self.attente_de_connexion()
+
+		print("client connecté")
 
 		nb_carte = g_e_s.Gestionnaire_entree_sortie_donnee.static_nombre_de_fichier(self.app.ch_dossier)
 
@@ -143,17 +147,27 @@ class Serveur:
 
 		self.phase_chargement_carte(self.app.g_clients[0], liste)
 
-		self.app.carte.positionement_aleatoire(self.app.g_clients[0].joueur)
+		self.attente_de_connexion()
 
-		while True:
+		for connexion in self.app.g_clients:
 
-			if self.phase_mouvement_joueur(self.app.g_clients[0]):
+			self.app.carte.positionement_aleatoire(connexion.joueur)
 
-				prep_inter_utilisateur = "felicitation vous avez gagné"
+		boucle = True
 
-				self.emission_donnee(self.app.g_clients[0].information_connexion, prep_inter_utilisateur)
+		while boucle:
 
-				break
+			for connexion in self.app.g_clients:
+
+				if self.phase_mouvement_joueur(connexion):
+
+					prep_inter_utilisateur = "felicitation vous avez gagné"
+
+					self.emission_donnee(connexion.information_connexion, prep_inter_utilisateur)
+
+					boucle = False
+
+					break
 
 
 class test_serveur (unittest.TestCase):

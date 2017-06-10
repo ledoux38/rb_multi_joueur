@@ -93,11 +93,11 @@ class Carte:
 		
 		#je cree une list de list pour cree le labyrinthre
 
-		dictionnaire = {" ": e_c.Couloir(), 
-						".": e_c.Porte(), 
-						"U": e_c.Sortie(), 
-						"O": e_c.Obstacle(), 
-						"X": e_c.Couloir()
+		dictionnaire = {" ": e_c.Couloir, 
+						".": e_c.Porte, 
+						"U": e_c.Sortie, 
+						"O": e_c.Obstacle, 
+						"X": e_c.Couloir
 						}
 
 		i = chaine + "\n"
@@ -110,13 +110,14 @@ class Carte:
 		for x in i:
 
 			if x != "\n":
+
 				try:
-					ligne.append(copy.deepcopy(dictionnaire[x]))
+					ligne.append(dictionnaire[x]())
 					#print(dictionnaire[x])
 
 				except KeyError:
 
-					ligne.append(copy.deepcopy(dictionnaire[" "]))
+					ligne.append(dictionnaire[" "]())
 				
 			else:
 				
@@ -400,6 +401,34 @@ class Carte:
 
 
 
+	def dfsV2(self):
+
+		y, x = len(self.labyrinthe), len(self.labyrinthe[0])
+
+		tab = [ [999 for _ in range(x)] for _ in range(y) ]
+
+		todo_list = [(i.coordonnee,0) for i in self.rechercher_liste_valeurs(e_c.Sortie())]
+
+		liste_noeud_dist_max = []
+
+		dist_max = 0
+
+
+		while len(todo_list) != 0:
+
+			elem_actuel, distance = todo_list.pop()
+
+			if tab[elem_actuel[0]][elem_actuel[1]] > distance:
+
+				tab[elem_actuel[0]][elem_actuel[1]] = distance
+
+				todo_list += [(i,distance + 1) for i in self.liste_valeur_en_point_cardinaux(elem_actuel)]
+
+		return tab
+
+
+
+
 class test_carte (unittest.TestCase):
 
 	def setUp(self):
@@ -542,6 +571,29 @@ class test_carte (unittest.TestCase):
 		self.assertEqual(type(liste_objet[2]), type(e_c.Porte()))
 
 		self.assertEqual(type(liste_objet[3]), type(e_c.Porte()))
+
+	def test_dfsV2(self):
+
+		retour = self.a.dfsV2()
+
+		for i in retour:
+
+			for j in i:
+
+				if j == -1:
+
+					print("#", end = "")
+
+				elif j >= 10:
+
+					print("*", end = "")
+
+				else:
+
+					print(j, end = "")
+
+			print("")
+
 
 
 
