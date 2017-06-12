@@ -38,23 +38,6 @@ class Connexion:
 		return msg
 
 
-
-class test_serveur(unittest.TestCase):
-
-
-
-	def setUp(self):
-
-		self.a = cn.Connexion()
-
-
-
-	def tearDown(self):
-
-		print("\n")
-
-
-
 if __name__ == "__main__":
 	
 	unittest.main()
