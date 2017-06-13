@@ -115,12 +115,18 @@ class Application_labyrinthe:
 
 
 
-	def proposition_de_deplacement(self, joueur):
+	def proposition_de_deplacement(self, joueur, *affichage):
 		"""retourne dans une list les valeurs de deplacement possible du joueur"""
+
+		texte_sup = ""
+
+		for i in affichage:
+
+			texte_sup += str(i) + "\n"
 
 		liste = self.carte.liste_coordonne_en_point_cardinaux(coord = joueur.coordonnee)
 
-		chaine = "{}\nproposition de deplacement:\n".format(self.carte.tableau_en_str())
+		chaine = "{}\n{}\nproposition de deplacement:\n".format(texte_sup, self.carte.carte_utilisateur(joueur.coordonnee))
 
 		for mvt in liste:
 
@@ -369,6 +375,7 @@ class test_app_labyrinthe (unittest.TestCase):
 		self.classe_app_lab.carte.positionement_aleatoire(joueur1)	
 
 		retour, liste = self.classe_app_lab.proposition_de_deplacement(joueur1)
+
 
 
 
