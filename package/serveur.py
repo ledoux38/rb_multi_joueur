@@ -102,7 +102,7 @@ class Serveur:
 
 		while True:
 
-			if connexion != False:
+			if connexion == True:
 
 				self.emission_donnee(connexion.information_connexion, self.app.choix_carte(erreur = erreur))
 
@@ -121,6 +121,40 @@ class Serveur:
 			else:
 
 				erreur = True
+
+
+
+
+	def phase_chargement_carteV2(self, connexion = False):
+
+		nb_carte = g_e_s.Gestionnaire_entree_sortie_donnee.static_nombre_de_fichier(self.app.ch_dossier)
+
+		liste = str(list(range(nb_carte)))
+
+		erreur = False
+
+		while True:
+
+			if connexion == True:
+
+				self.emission_donnee(connexion.information_connexion, self.app.choix_carte(erreur = erreur))
+
+				choix = self.reception_donnee(connexion.information_connexion)
+
+			else:
+
+				choix = input(self.app.choix_carte(erreur = erreur))
+			
+			if choix in liste:
+			
+				self.app.chargement_carte(choix)
+
+				break
+
+			else:
+
+				erreur = True
+
 
 
 	def phase_mouvement_joueur(self, connexion):
@@ -233,21 +267,25 @@ class Serveur:
 				
 				self.app.g_clients.tableau_de_connexions.append(cn.Connexion(connexion = connexion_avec_client))
 
-				message_a_envoyer = "bienvenue au jeux du labyrinthe! \n vous etes {} joueurs ".format(len(self.app.g_clients)).encode()
+				self.app.carte.positionement_aleatoire(self.app.g_clients[-1].joueur)
+
+				message_a_envoyer = "bienvenue au jeux du labyrinthe! \n vous etes {} joueurs \n{}\nCommande: <C> pour commencer partie".format(
+					len(self.app.g_clients), self.app.carte.carte_utilisateur(self.app.g_clients[-1].joueur.coordonnee)).encode()
 		
 				connexion_avec_client.send(message_a_envoyer)		
 
-				for client in liste_client:
+				for client in self.app.g_clients:
 
-					if client == liste_client[-1]:
+					if client == self.app.g_clients[-1]:
 
 						pass
 
 					else:
 
-						message_a_envoyer = "nouveau joueur connecté".encode()
+						message_a_envoyer = "{}\nnouveau joueur connecté\ntotal de joueur: {} \n{}\nCommande: <C> pour commencer partie".format("\n"*50,
+						len(self.app.g_clients), self.app.carte.carte_utilisateur(client.joueur.coordonnee)).encode()
 		
-						client.send(message_a_envoyer)
+						client.information_connexion.send(message_a_envoyer)
 
 		    
 			clients_a_lire = []
@@ -271,6 +309,12 @@ class Serveur:
 						serveur_lance = False
 
 						break
+
+					else:
+
+						message_a_envoyer = "erreur commande non reconnu\ncommande : <C> commencer partie\n".encode()
+				
+						connexion_avec_client.send(message_a_envoyer)
 
 
 
@@ -300,9 +344,29 @@ class test_serveur (unittest.TestCase):
 
 	def test_attente_de_connexionv2(self):
 
+		self.a.phase_chargement_carteV2()
+
+		print("carte chargée!\n en attente de clients")
+
 		self.a.test_attente_de_connexionv2()
 
+		boucle = True
 
+		while boucle:
+
+			for connexion in self.a.app.g_clients:
+
+				self.a.emission_donnee(connexion.information_connexion, "\n"*50)
+
+				if self.a.phase_mouvement_joueur(connexion):
+
+					prep_inter_utilisateur = "felicitation vous avez gagné"
+
+					self.a.emission_donnee(connexion.information_connexion, prep_inter_utilisateur)
+
+					boucle = False
+
+					break
 	
 
 
