@@ -310,7 +310,10 @@ class Carte:
 	def liste_coordonne_en_point_cardinaux(self, coord):
 		"""Méthode appelée quand on souhaite connaitre les chemins de passage valide"""
 
-		liste = []
+		p_cardinaux = []
+
+		liste_objet = []
+
 
 		dic = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
 
@@ -320,9 +323,13 @@ class Carte:
 			
 			if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie) :
 
-				liste.append("{}".format(mvt))
+				p_cardinaux.append("{}".format(mvt))
 
-		return liste
+				liste_objet.append(objet)
+
+				print("liste_coordonne : ", p_cardinaux)
+
+		return p_cardinaux, liste_objet
 
 
 
@@ -547,6 +554,8 @@ class test_carte (unittest.TestCase):
 		self.a.positionement_aleatoire(joueur1)
 
 		liste = self.a.liste_coordonne_en_point_cardinaux(coord = joueur1.coordonnee)
+
+		print(liste[1])
 
 
 

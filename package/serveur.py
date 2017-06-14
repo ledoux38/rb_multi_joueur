@@ -167,15 +167,17 @@ class Serveur:
 
 				prep_inter_utilisateur , liste = self.app.proposition_de_deplacement(connexion.joueur, "Erreur dans la saisie veuillez recommencer!")
 
+				print(prep_inter_utilisateur, liste)
+			
 			else:
 
 				prep_inter_utilisateur , liste = self.app.proposition_de_deplacement(connexion.joueur, "A vous de jouer!")
 
 			self.emission_donnee(connexion.information_connexion, prep_inter_utilisateur)
 
-			choix = self.reception_donnee(connexion.information_connexion)
+			reponse_joueur = self.reception_donnee(connexion.information_connexion)
 
-			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = choix)
+			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = reponse_joueur)
 
 			if reponse_joueur in liste: 
 
@@ -329,11 +331,11 @@ class test_serveur (unittest.TestCase):
 
 	def tearDown(self):
 
+		self.a.connexion.close()
+
 		for i in self.a.app.g_clients:
 
 			i.information_connexion.close()
-
-		self.a.connexion.close()
 
 
 
@@ -368,7 +370,7 @@ class test_serveur (unittest.TestCase):
 
 					break
 	
-
+		self.a.connexion.close()
 
 if __name__ == '__main__':
 

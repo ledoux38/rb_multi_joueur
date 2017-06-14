@@ -124,44 +124,80 @@ class Application_labyrinthe:
 
 			texte_sup += str(i) + "\n"
 
-		liste = self.carte.liste_coordonne_en_point_cardinaux(coord = joueur.coordonnee)
+		p_cardinaux, liste_objet = self.carte.liste_coordonne_en_point_cardinaux(coord = joueur.coordonnee)
 
 		chaine = "{}\n{}\nproposition de deplacement:\n".format(texte_sup, self.carte.carte_utilisateur(joueur.coordonnee))
 
-		for mvt in liste:
+		for i, mvt in enumerate(p_cardinaux):
+
+			if isinstance(liste_objet[i], e_c.Porte):
+
+				if liste_objet[i].traversant:
+
+					chaine += "<M{}> ".format(mvt)
+
+				else:
+
+					chaine += "<P{}> ".format(mvt)
 
 			chaine += "<{}> ".format(mvt)
 
-		return chaine, liste
+		autre_comportement = ["MN","ME","MS","MO","PN","PE","PS","PO" ]
+		
+		p_cardinaux.extend(autre_comportement)
+
+		return chaine, p_cardinaux
 
 
 
 	def mouvement_joueur(self, joueur, mouvement):
 		"""fonction qui va deplacer le joueurs sur la carte"""
 
-		if not mouvement in "NSEO":
-			raise ValueError( "mouvement != 'NSEO' ")
-
 		coord_j = joueur.coordonnee
 
 		obj = None
 
-		dic = {"N":(-1,0), "E":(0,1), "S":(1,0), "O":(0,-1)}
-
+		dic = {
+			"N":(-1,0),
+			"E":(0,1),
+			"S":(1,0), 
+			"O":(0,-1),
+			"MN" : (-1,0),
+			"ME" : (0,1),
+			"MS" : (1,0),
+			"MO" : (0,-1),
+			"PN" : (-1,0),
+			"PE" : (0,1),
+			"PS" : (1,0),
+			"PO" : (0,-1)}
 
 		obj = self.carte [coord_j[0] + dic[mouvement][0] ] [coord_j[1] + dic[mouvement][1] ]
 
 		if isinstance(obj, e_c.Couloir) or isinstance(obj, e_c.Porte) or isinstance(obj, e_c.Sortie):
 
-			copie_objet = copy.deepcopy(joueur.element_nouvelle_position)
-			
-			joueur.coordonnee = obj.coordonnee
+			if mouvement in ["MN", "ME", "MS", "MO"]:
 
-			joueur.element_nouvelle_position = obj
+				obj.forme = "0"
 
-			self.carte[joueur.coordonnee[0]][joueur.coordonnee[1]] = joueur
+				obj.traversant = False
 
-			self.carte[copie_objet.coordonnee[0]][copie_objet.coordonnee[1]] = copie_objet
+			elif mouvement in ["PN", "PE", "PS", "PO"]:
+
+				obj.forme = "."
+
+				obj.traversant = True
+
+			else:
+
+				copie_objet = copy.deepcopy(joueur.element_nouvelle_position)
+					
+				joueur.coordonnee = obj.coordonnee
+
+				joueur.element_nouvelle_position = obj
+
+				self.carte[joueur.coordonnee[0]][joueur.coordonnee[1]] = joueur
+
+				self.carte[copie_objet.coordonnee[0]][copie_objet.coordonnee[1]] = copie_objet
 
 		else:
 
@@ -372,9 +408,13 @@ class test_app_labyrinthe (unittest.TestCase):
 
 		self.classe_app_lab.chargement_carte(choix = "1")
 
-		self.classe_app_lab.carte.positionement_aleatoire(joueur1)	
+		self.classe_app_lab.carte.positionement_aleatoire(joueur1)
+
+		self.classe_app_lab.carte[3][2].traversant = False
 
 		retour, liste = self.classe_app_lab.proposition_de_deplacement(joueur1)
+
+		print(retour)
 
 
 
@@ -392,7 +432,7 @@ class test_app_labyrinthe (unittest.TestCase):
 		self.assertEqual( type( self.classe_app_lab.carte[1][1] ), type( e_c.Obstacle() ) )
 
 
-
+	"""
 	def test_verification_de_victoire(self):
 
 		joueur1 = c_n.Connexion().joueur
@@ -406,7 +446,7 @@ class test_app_labyrinthe (unittest.TestCase):
 		victoire = self.classe_app_lab.verification_de_victoire()
 
 		self.assertEqual(type(victoire), type(e_c.Joueur()))
-
+	"""
 
 	"""
 	def test_phase_choix_carte(self):
