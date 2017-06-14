@@ -139,8 +139,10 @@ class Application_labyrinthe:
 				else:
 
 					chaine += "<P{}> ".format(mvt)
-
-			chaine += "<{}> ".format(mvt)
+			
+			if liste_objet[i].traversant:
+			
+				chaine += "<{}> ".format(mvt)
 
 		autre_comportement = ["MN","ME","MS","MO","PN","PE","PS","PO" ]
 		

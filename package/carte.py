@@ -321,7 +321,7 @@ class Carte:
 
 			objet = self.labyrinthe [coord[0] + dic[mvt][0] ] [coord[1] + dic[mvt][1] ]
 			
-			if isinstance(objet, e_c.Couloir) or isinstance(objet, e_c.Porte) or isinstance(objet, e_c.Sortie) :
+			if objet.traversant or isinstance(objet, e_c.Porte):
 
 				p_cardinaux.append("{}".format(mvt))
 
