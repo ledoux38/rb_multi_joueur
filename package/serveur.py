@@ -180,8 +180,6 @@ class Serveur:
 			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = reponse_joueur)
 
 			if reponse_joueur in liste: 
-
-				self.emission_donnee(connexion.information_connexion, "\n" * 50)
 			
 				self.app.mouvement_joueur(connexion.joueur, reponse_joueur)
 
@@ -238,7 +236,7 @@ class Serveur:
 
 			for connexion in self.app.g_clients:
 
-				self.emission_donnee(connexion.information_connexion, "\n"*50)
+				#self.emission_donnee(connexion.information_connexion, "\n"*50)
 
 				if self.phase_mouvement_joueur(connexion):
 

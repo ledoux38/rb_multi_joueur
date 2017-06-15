@@ -28,13 +28,17 @@ class Thread_Reception(threading.Thread):
 			
 			message_recu = self.connexion.recv(1024).decode()
 
-			print(message_recu)
-			
 			if not message_recu or message_recu.upper() =="FIN":
 				
 				break
 
-		print("Client arrêté. Connexion interrompue.")
+			else:
+
+				print("\033c", message_recu)
+			
+
+
+		print("Client arrêté. appuyer sur une touche pour terminer.")
 		
 		self.connexion.close()
 
@@ -55,7 +59,13 @@ class Thread_Emission(threading.Thread):
 
 			message_emis = input()
 
-			self.connexion.send(message_emis.encode())
+			try:
+
+				self.connexion.send(message_emis.encode())
+
+			except:
+
+				break
 
 
 
