@@ -32,6 +32,11 @@ try:
 except:
 	import utilitaires as us
 
+try:
+	import package.elements_de_carte as e_c
+except:
+	import elements_de_carte as e_c
+
 
 class Serveur:
 	"""la classe Serveur crée le serveur. elle gere les 
@@ -180,10 +185,27 @@ class Serveur:
 			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = reponse_joueur)
 
 			if reponse_joueur in liste: 
-			
-				self.app.mouvement_joueur(connexion.joueur, reponse_joueur)
 
-				self.emission_donnee(connexion.information_connexion, self.app.carte.carte_utilisateur(connexion.joueur.coordonnee))
+				if reponse_joueur == "QUIT":
+
+					if len(self.app.g_clients) < 2:
+
+						self.connexion = close()
+
+						break
+
+					else:
+
+						coordonnee = connexion.joueur.coordonnee
+
+						self.app.carte[coordonnee[0]][coordonnee[1]] = e_c.Couloir(coordonnee = coordonnee)
+
+						self.app.g_clients.tableau_de_connexions.remove(connexion)
+				else:
+
+					self.app.mouvement_joueur(connexion.joueur, reponse_joueur)
+
+					self.emission_donnee(connexion.information_connexion, self.app.carte.carte_utilisateur(connexion.joueur.coordonnee))
 
 			else:
 
@@ -356,7 +378,7 @@ class test_serveur (unittest.TestCase):
 
 			for connexion in self.a.app.g_clients:
 
-				self.a.emission_donnee(connexion.information_connexion, "\n"*50)
+				#self.a.emission_donnee(connexion.information_connexion, "\n"*50)
 
 				if self.a.phase_mouvement_joueur(connexion):
 

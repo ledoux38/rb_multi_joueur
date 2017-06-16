@@ -144,7 +144,9 @@ class Application_labyrinthe:
 			
 				chaine += "<{}> ".format(mvt)
 
-		autre_comportement = ["MN","ME","MS","MO","PN","PE","PS","PO" ]
+		chaine += "<QUIT> "
+
+		autre_comportement = ["MN","ME","MS","MO","PN","PE","PS","PO","QUIT" ]
 		
 		p_cardinaux.extend(autre_comportement)
 
