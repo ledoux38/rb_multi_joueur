@@ -190,6 +190,8 @@ class Serveur:
 
 					if len(self.app.g_clients) < 2:
 
+						connexion.information_connexion.close()
+
 						self.connexion = close()
 
 						break
@@ -200,12 +202,14 @@ class Serveur:
 
 						self.app.carte[coordonnee[0]][coordonnee[1]] = e_c.Couloir(coordonnee = coordonnee)
 
+						connexion.information_connexion.close()
+
 						self.app.g_clients.tableau_de_connexions.remove(connexion)
 				else:
 
 					self.app.mouvement_joueur(connexion.joueur, reponse_joueur)
 
-					self.emission_donnee(connexion.information_connexion, self.app.carte.carte_utilisateur(connexion.joueur.coordonnee))
+					self.emission_donnee(connexion.information_connexion,self.app.carte.carte_utilisateur(connexion.joueur.coordonnee), "en attente des autres joueurs...")
 
 			else:
 
@@ -304,7 +308,7 @@ class Serveur:
 
 					else:
 
-						message_a_envoyer = "{}\nnouveau joueur connecté\ntotal de joueur: {} \n{}\nCommande: <C> pour commencer partie".format("\n"*50,
+						message_a_envoyer = "nouveau joueur connecté\ntotal de joueur: {} \n{}\nCommande: <C> pour commencer partie".format(
 						len(self.app.g_clients), self.app.carte.carte_utilisateur(client.joueur.coordonnee)).encode()
 		
 						client.information_connexion.send(message_a_envoyer)
@@ -327,6 +331,12 @@ class Serveur:
 					msg_recu = msg_recu.decode().upper()
 
 					if msg_recu == "C":
+
+						for client in self.app.g_clients:
+
+							message_a_envoyer = "{}\n{}".format("Debut de la partie:",self.app.carte.carte_utilisateur(client.joueur.coordonnee)).encode()
+
+							client.information_connexion.send(message_a_envoyer)
 
 						serveur_lance = False
 
@@ -364,7 +374,7 @@ class test_serveur (unittest.TestCase):
 		self.a.app_labyrinthe()
 	"""
 
-	def test_attente_de_connexionv2(self):
+	def test_labyrinthe(self):
 
 		self.a.phase_chargement_carteV2()
 
@@ -378,8 +388,6 @@ class test_serveur (unittest.TestCase):
 
 			for connexion in self.a.app.g_clients:
 
-				#self.a.emission_donnee(connexion.information_connexion, "\n"*50)
-
 				if self.a.phase_mouvement_joueur(connexion):
 
 					prep_inter_utilisateur = "felicitation vous avez gagné"
@@ -389,6 +397,10 @@ class test_serveur (unittest.TestCase):
 					boucle = False
 
 					break
+
+		for connexion in self.a.app.g_clients:
+
+			connexion.information_connexion.close()
 	
 		self.a.connexion.close()
 

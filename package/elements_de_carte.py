@@ -29,7 +29,7 @@ class Elements_de_carte():
 class Joueur(Elements_de_carte):
 	def __init__(self, coordonnee = (0, 0)):
 		Elements_de_carte.__init__(self, coordonnee = coordonnee)
-		self.forme = "X"
+		self.forme = "X" #"\e[32mX\e[0m"
 		self.element_nouvelle_position = Couloir(coordonnee = coordonnee)
 
 
