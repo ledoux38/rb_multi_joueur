@@ -12,11 +12,6 @@ except:
 	import gestionnaire_clients as g_c
 
 try:
-	import package.utilitaires as us
-except:
-	import utilitaires as us
-
-try:
 	import package.Gestionnaire_entree_sortie_donnee as g_e_s
 except:
 	import Gestionnaire_entree_sortie_donnee as g_e_s
@@ -75,20 +70,6 @@ class Application_labyrinthe:
 			texte_descriptif = "{} \n {}".format("Erreur lors de la saisi!", texte_descriptif)
 
 		return texte_descriptif
-
-
-
-	def validation_reponse_joueurs(self, reponse, action):	# inutilsé pour le moment
-		"""fonction qui va analyser la reponse pour verifier ça validiter"""
-		reponse_joueur = us.conversion_saisie_en_majuscule(chaine = reponse)
-
-		if reponse_joueur in action:
-			
-			return True
-
-		else:
-			
-			return False
 
 
 
@@ -221,55 +202,6 @@ class Application_labyrinthe:
 				return liste
 
 		return None
-
-
-
-	def phase_deplacement_joueur(self, joueurs):
-
-		while True:
-
-			print(self.carte)
-
-			prep_inter_utilisateur , liste = self.proposition_de_deplacement(joueurs)
-
-			print(liste)
-
-			choix = input(prep_inter_utilisateur)
-
-			reponse_joueur = us.conversion_saisie_en_majuscule(chaine = choix)
-
-			if reponse_joueur in liste: 
-			
-				self.mouvement_joueur(joueurs, reponse_joueur)
-
-				break
-
-			else:
-
-				print("Erreur lors de la saisie du choix \n recommencer!")		
-
-
-
-	def phase_choix_carte(self):
-
-		nb_carte = g_e_s.Gestionnaire_entree_sortie_donnee.static_nombre_de_fichier(self.ch_dossier)
-
-		liste = str(list(range(nb_carte)))
-
-		while True:
-
-			choix = input(self.choix_carte())
-
-			if choix in liste:
-			
-				self.chargement_carte(choix)
-
-				break
-
-			else:
-
-				print("Erreur lors de la saisie du choix \n recommencer!")
-
 
 
 if __name__ == "__main__":

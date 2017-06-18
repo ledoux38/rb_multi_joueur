@@ -11,9 +11,11 @@ class Gestionnaire_entree_sortie_donnee:
 		et le chemin d'acces"""
 
 		if not isinstance(chemin_dossier,str):
+			
 			raise TypeError("erreur parametre chemin_dossier n'est pas de type <str> il est de type <{}>".format(type(chemin_dossier)))
 
 		if not os.path.exists(chemin_dossier):
+			
 			raise FileNotFoundError("le dossier <{}> d'existe pas".format(chemin_dossier))
 
 		self._chemin_dossier = chemin_dossier
@@ -52,7 +54,10 @@ class Gestionnaire_entree_sortie_donnee:
 
 
 	def _set_changement_adresse_fichier(self, nouvelle_adresse):
+		"""methode speciale modifie l'adresse de fichier"""
+
 		if not os.path.exists(nouvelle_adresse):
+			
 			raise FileNotFoundError("le dossier <{}> d'existe pas".format(nouvelle_adresse))
 		
 		self._chemin_dossier = nouvelle_adresse
@@ -65,18 +70,21 @@ class Gestionnaire_entree_sortie_donnee:
 
 	def _get_adresse_fichier(self):
 		"""retourne l'adresse du fichier"""
+
 		return self._chemin_dossier
 
 
 
 	def _set_actualise_liste_donnee(self):
 		"""actualise la liste de donnee"""	
+
 		self._liste = os.listdir(self._chemin_dossier)
 
 
 
 	def _get_liste_donnee(self):
 		"""retourne la liste de donnee"""
+
 		return self._liste
 
 
@@ -87,17 +95,22 @@ class Gestionnaire_entree_sortie_donnee:
 
 	def chargement_donnee(self,nom_fichier):
 		""" charge le fichier a l'adresse indiquer """
+
 		if not isinstance(nom_fichier,str):
+
 			raise TypeError("erreur parametre chemin_dossier n'est pas de type <str> il est de type <{}>".format(type(nom_fichier)))
 		
 		adr = self.chemin_dossier + nom_fichier		
 
 		if not os.path.isfile(adr):
+
 			raise FileNotFoundError("erreur le fichier n'existe pas ou plus!")
 		
 
 		with open(adr,'r') as mon_fichier:
+
 			fichier = mon_fichier.read()
+
 			return fichier
 
 
@@ -107,35 +120,47 @@ class Gestionnaire_entree_sortie_donnee:
 
 		"""verification des parametre envoyer a la fonction"""
 		if not isinstance(nom_fichier,str):
+
 			raise TypeError("erreur parametre chemin_dossier ou donnee n'est pas de type <str> il est de type <{}>".format(type(nom_fichier)))
 			
 		if not isinstance(donnee_a_sauvegarder,str):
+
 			raise TypeError("erreur parametre donnee_a_sauvegarder ou donnee n'est pas de type <str> il est de type <{}>".format(type(donnee_a_sauvegarder)))
+		
 		"""ouverture du fichier pour la sauvegarde"""
+		
 		adr = self.chemin_dossier + nom_fichier
+		
 		with open(adr,'w') as mon_fichier:
+			
 			mon_fichier.write(donnee_a_sauvegarder)
 
 
 
 	chemin_dossier= property(_get_adresse_fichier,_set_changement_adresse_fichier)
+	
 	liste= property(_get_liste_donnee,_set_actualise_liste_donnee)
 
 
 
 	def static_chargement_donnee(self,nom_fichier):
 		""" charge le fichier a l'adresse indiquer """
+		
 		if not isinstance(nom_fichier,str):
+			
 			raise TypeError("erreur parametre chemin_dossier n'est pas de type <str> il est de type <{}>".format(type(nom_fichier)))
 		
 		adr = self.chemin_dossier + nom_fichier		
 
 		if not os.path.isfile(adr):
+			
 			raise FileNotFoundError("erreur le fichier n'existe pas ou plus!")
 		
 
 		with open(adr,'r') as mon_fichier:
+			
 			fichier = mon_fichier.read()
+			
 			return fichier
 
 
@@ -176,8 +201,10 @@ class Gestionnaire_entree_sortie_donnee:
 
 		#je recupere la list de données de fichier
 		donnee = os.listdir(chemin_dossier)
+		
 		# je cherche les donnee dans le tableau
 		index = donnee.index(mot_rechercher)
+		
 		# je retourne l'index du mot rechercher
 		return index
 
@@ -199,6 +226,7 @@ class Gestionnaire_entree_sortie_donnee:
 
 	def static_chargement_donnee(ch_fichier):
 		""" charge le fichier a l'adresse indiquer """
+		
 		if not isinstance(ch_fichier,str):
 		
 			raise TypeError("erreur parametre chemin_dossier n'est pas de type <str> il est de type <{}>".format(type(nom_fichier)))

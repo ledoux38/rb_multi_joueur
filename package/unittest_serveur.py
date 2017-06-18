@@ -68,11 +68,11 @@ class test_serveur (unittest.TestCase):
 
 	def test_labyrinthe(self):
 
-		self.a.phase_chargement_carteV2()
+		self.a.phase_chargement_carte()
 
 		print("carte chargée!\n en attente de clients")
 
-		self.a.test_attente_de_connexionv2()
+		self.a.attente_de_connexion()
 
 		boucle = True
 

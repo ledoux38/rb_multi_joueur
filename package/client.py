@@ -69,7 +69,8 @@ class Thread_Emission(threading.Thread):
 
 
 def ouverture_connexion(adresse, port):
-	
+	"""fonction qui ouvre un port pour ecoute"""
+
 	connexion = st.socket(st.AF_INET, st.SOCK_STREAM)
 	
 	connexion.connect((adresse, port))
