@@ -6,7 +6,6 @@ try:
 except:
 	import elements_de_carte as e_c
 
-import unittest 
 
 class Connexion:
 
@@ -37,7 +36,3 @@ class Connexion:
 		
 		return msg
 
-
-if __name__ == "__main__":
-	
-	unittest.main()
