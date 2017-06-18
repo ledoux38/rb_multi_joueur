@@ -16,6 +16,11 @@ try:
 except:
 	import elements_de_carte as e_c
 
+try:
+	import package.carte as c
+except:
+	import carte as c
+
 import unittest
 
 import copy
