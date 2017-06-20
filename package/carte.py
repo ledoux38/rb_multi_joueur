@@ -35,7 +35,7 @@ class Carte:
 
 		self.sortie = self.rechercher_liste_valeurs(e_c.Sortie())[0]
 
-		self.list_posit_joueur = self.graphe_de_sommet()
+		self.list_posit_joueur = self.dfs()
 
 
 	def __str__(self):
@@ -273,19 +273,18 @@ class Carte:
 
 
 	def positionement_aleatoire(self, joueur):
-		"""Méthode appelée quand on souhaite faire un positionnement aleatoire des joueurs"""
 
-		liste_coordonnee = self.liste_valeurs_par_lignes(e_c.Couloir())
+		tab_v_max = []
 
-		for liste in liste_coordonnee:
+		for i in self.list_posit_joueur:
+			tab_v_max.append(i[1])
 
-			for i in liste:
 
-				if not i in self.list_posit_joueur:
+		maxi = max(tab_v_max)
 
-					liste.remove(i)
+		ind = tab_v_max.index(maxi)
 
-		coordonnee = random.choice(liste_coordonnee[0])
+		coordonnee = self.list_posit_joueur[ind][0]
 
 		joueur.coordonnee = coordonnee
 
@@ -293,6 +292,7 @@ class Carte:
 
 		self.labyrinthe[coordonnee[0]][coordonnee[1]] = joueur
 
+		self.list_posit_joueur.remove((coordonnee, maxi))
 
 
 	def liste_coordonne_en_point_cardinaux(self, coord):
@@ -340,63 +340,7 @@ class Carte:
 
 
 
-	def graphe_de_sommet(self):
-		liste_obj = []
-
-		dic = {}
-
-		liste_recherche = [ e_c.Couloir(), e_c.Porte(), e_c.Sortie() ]
-		#recuperation de tout les objets de type couloir, porte,sortie
-		for recherche in liste_recherche:
-
-			liste_obj.extend(self.rechercher_liste_valeurs(recherche))
-
-		#pour chaque case du tableau je vais cree une liste de voisin
-		for i in liste_obj:
-
-			dic[i.coordonnee] = self.liste_valeur_en_point_cardinaux(i.coordonnee)
-
-		#pour chaque case du dictionnaire je vais remonter le chemin
-		liste_dfs = self.dfs(dic, self.sortie.coordonnee)
-
-		liste = []
-
-		# je recupere chaque clee du dictionnaire retourné
-		for valeur in liste_dfs.keys():
-
-			liste.append(valeur)
-
-		return liste
-
-
-
-	def dfs(self, G, s) :
-
-		P,Q={s :None},[s]
-
-		while Q :
-
-			u=Q[-1]
-
-			R=[y for y in G[u] if y not in P]
-
-			if R :
-
-				v=random.choice(R)
-
-				P[v]=u
-
-				Q.append(v)
-
-			else :
-
-				Q.pop()
-
-		return P
-
-
-
-	def dfsV2(self):
+	def dfs(self):
 
 		y, x = len(self.labyrinthe), len(self.labyrinthe[0])
 
@@ -419,6 +363,16 @@ class Carte:
 
 				todo_list += [(i,distance + 1) for i in self.liste_valeur_en_point_cardinaux(elem_actuel)]
 
-		return tab
+		#return tab
 
+		liste_valeur = []
 
+		for y, r in enumerate(tab):
+
+			for x, v in enumerate(r):
+
+				if not v == 999:
+
+					liste_valeur.append(((y, x),v))
+		
+		return liste_valeur

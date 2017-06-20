@@ -79,7 +79,6 @@ class test_carte (unittest.TestCase):
 		
 		liste_reel = [(3, 3), (5, 9), (7, 9), (10, 3)]
 
-
 		self.assertEqual(liste, liste_reel)
 
 		liste = self.a.rechercher_les_coordonnees_des_valeurs(e_c.Sortie())
@@ -118,6 +117,8 @@ class test_carte (unittest.TestCase):
 
 		coord2 = joueur2.coordonnee
 
+		print(self.a )
+
 		self.assertEqual(id(joueur1),id(self.a[coord1[0]][coord1[1]]))
 		
 		self.assertEqual(joueur2,self.a[coord2[0]][coord2[1]])	
@@ -131,6 +132,7 @@ class test_carte (unittest.TestCase):
 		self.a.positionement_aleatoire(joueur1)
 
 		liste = self.a.liste_coordonne_en_point_cardinaux(coord = joueur1.coordonnee)
+
 
 
 	def test_rechercher_liste_valeurs(self):
@@ -159,8 +161,6 @@ class test_carte (unittest.TestCase):
 	"""
 	def test_dfsV2(self):
 
-		retour = self.a.dfsV2()
-
 		for i in retour:
 
 			for j in i:
@@ -178,23 +178,25 @@ class test_carte (unittest.TestCase):
 					print(j, end = "")
 
 			print("")
-	"""
-
-	"""
-	def test_carte_utilisateur(self):
-
-		joueur1 = e_c.Joueur()
-
-		joueur2 = e_c.Joueur()
-
-		self.a.positionement_aleatoire(joueur1)
 		
-		self.a.positionement_aleatoire(joueur2)	
-		
-		coord = self.a.rechercher_les_coordonnees_des_valeurs(valeur = e_c.Joueur())
 
-		coord = random.choice(coord)
-		"""
+		liste_valeur_max = []
+
+		for y, r in enumerate(retour):
+			for x, v in enumerate(r):
+				if not v == 999:
+					liste_valeur_max.append(((y, x),v))
+
+		valeur = []
+
+		for i in liste_valeur_max:
+			valeur.append(i[1])
+
+		print(liste_valeur_max)
+
+		print(valeur)
+
+	"""
 
 if __name__ == '__main__':
 
