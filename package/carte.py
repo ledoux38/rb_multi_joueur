@@ -273,6 +273,7 @@ class Carte:
 
 
 	def positionement_aleatoire(self, joueur):
+		"""Méthode appelée quand on souhaite positionner le joueur sur la carte"""
 
 		tab_v_max = []
 
@@ -280,7 +281,7 @@ class Carte:
 			tab_v_max.append(i[1])
 
 
-		maxi = max(tab_v_max)
+		maxi = max(tab_v_max)-2
 
 		ind = tab_v_max.index(maxi)
 

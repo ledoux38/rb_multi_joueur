@@ -176,6 +176,10 @@ class Serveur:
 
 						self.app.g_clients.tableau_de_connexions.remove(connexion)
 
+				elif reponse_joueur == "PASSER":
+				#sinon si la connexion renvoi PASSER alors on passe le tour du joueur
+					pass
+
 				#si reponse connexion different de "quit alors mouvement autorisé"
 				else:
 
