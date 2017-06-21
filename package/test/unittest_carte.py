@@ -1,5 +1,7 @@
 #!/usr/bin/python3.5
 # -*-coding:Utf-8 -*
+import sys
+sys.path[:0] = ['./']
 
 try:
 	import package.Gestionnaire_entree_sortie_donnee as ES
@@ -116,8 +118,6 @@ class test_carte (unittest.TestCase):
 		coord1 = joueur1.coordonnee
 
 		coord2 = joueur2.coordonnee
-
-		print(self.a )
 
 		self.assertEqual(id(joueur1),id(self.a[coord1[0]][coord1[1]]))
 		

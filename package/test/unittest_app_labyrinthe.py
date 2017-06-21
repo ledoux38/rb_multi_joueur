@@ -1,22 +1,8 @@
 #!/usr/bin/python3.5
 # -*-coding:Utf-8 -* 
 
-from __future__ import absolute_import
-
-import os,sys
-
-dossier = os.path.dirname(os.path.abspath(__file__))
- 
-while not dossier.endswith('package'):
-	dossier = os.path.dirname(dossier)
- 
-dossier = os.path.dirname(dossier)
- 
-if dossier not in sys.path:
-	sys.path.append(dossier)
-
-
-
+import sys
+sys.path[:0] = ['./']
 
 try:
 	import package.gestionnaire_clients as g_c
@@ -125,22 +111,6 @@ class test_app_labyrinthe (unittest.TestCase):
 
 
 
-	def test_validation_reponse_joueurs(self):
-		
-		reponse = "0"
-		
-		action = ["0","1","2"]
-
-		self.assertTrue(self.classe_app_lab.validation_reponse_joueurs(reponse,action))
-
-		reponse = "02"
-		
-		action = ["0","1","2"]
-
-		self.assertFalse(self.classe_app_lab.validation_reponse_joueurs(reponse,action))
-
-
-
 	def test_choix_carte(self):
 
 		retour = self.classe_app_lab.choix_carte()
@@ -178,24 +148,6 @@ class test_app_labyrinthe (unittest.TestCase):
 		echantillion_a = self.classe_app_lab.carte[5][5]
 
 		self.assertEqual(type(echantillion_a), type(e_c.Obstacle()))
-
-
-
-	def test_proposition_de_deplacement(self):
-
-		joueur1 = c_n.Connexion().joueur
-
-		self.classe_app_lab.chargement_carte(choix = "1")
-
-		self.classe_app_lab.carte.positionement_aleatoire(joueur1)	
-
-		retour, liste = self.classe_app_lab.proposition_de_deplacement(joueur1)
-
-		liste_reel = ['S', 'MN', 'ME', 'MS', 'MO', 'PN', 'PE', 'PS', 'PO', 'QUIT']
-
-		self.assertEqual(liste_reel, liste)
-
-
 
 
 

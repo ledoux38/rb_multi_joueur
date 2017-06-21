@@ -1,6 +1,9 @@
 #!/usr/bin/python3.5
 # -*-coding:Utf-8 -*
 
+import sys
+sys.path[:0] = ['./']
+
 import unittest
 
 import socket as st
@@ -8,9 +11,9 @@ import socket as st
 import select as s_c
 
 try:
-	import package.test.connexion as cn
+	import package.connexion as cn
 except:
-	import test.connexion as cn
+	import connexion as cn
 
 try:
 	import package.application_labyrinthe as a_l
