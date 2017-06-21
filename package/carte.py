@@ -280,7 +280,13 @@ class Carte:
 		for i in self.list_posit_joueur:
 			tab_v_max.append(i[1])
 
-		maxi = max(tab_v_max)-2
+		if len(tab_v_max) > 4:
+
+			maxi = max(tab_v_max)-2
+
+		else:
+
+			maxi = max(tab_v_max)
 
 		ind = tab_v_max.index(maxi)
 
@@ -293,6 +299,7 @@ class Carte:
 		self.labyrinthe[coordonnee[0]][coordonnee[1]] = joueur
 
 		self.list_posit_joueur.remove((coordonnee, maxi))
+
 
 
 	def liste_coordonne_en_point_cardinaux(self, coord):

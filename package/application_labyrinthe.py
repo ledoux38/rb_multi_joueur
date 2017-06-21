@@ -2,9 +2,9 @@
 # -*-coding:Utf-8 -* 
 
 try:
-	import package.carte
+	import package.carte as c
 except:
-	import carte
+	import carte as c
 
 try:
 	import package.gestionnaire_clients as g_c
@@ -84,7 +84,7 @@ class Application_labyrinthe:
 
 		carte_en_str = g_e_s.Gestionnaire_entree_sortie_donnee.static_chargement_donnee(adr)
 
-		self.carte = carte.Carte(nom = nom_fichier, chaine = carte_en_str)
+		self.carte = c.Carte(nom = nom_fichier, chaine = carte_en_str)
 
 
 
