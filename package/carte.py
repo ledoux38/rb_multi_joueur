@@ -224,14 +224,17 @@ class Carte:
 
 			raise TypeError("erreur le typage de la variable coordonnee_utilisateur doit etre de type <tuple> et non <{}>".format(type(nom)))
 		
+		#creation d'une copie de la carte
 		copie_labyrinthe = copy.deepcopy(self.labyrinthe)
 
+		#recuperation de la liste des autres joueur
 		liste_coordonnees = list(self.rechercher_les_coordonnees_des_valeurs(e_c.Joueur()))
 
 		for coordonnee in liste_coordonnees:
 			
 			if coordonnee != coordonnee_utilisateur:
 				
+				#modification des autres joueurs
 				copie_labyrinthe[coordonnee[0]][coordonnee[1]] = e_c.Autres_joueurs()
 
 		chaine=str()
@@ -277,9 +280,11 @@ class Carte:
 
 		tab_v_max = []
 
+		#recuperation de la liste des positionnements possibles
 		for i in self.list_posit_joueur:
 			tab_v_max.append(i[1])
 
+		# pour eviter que les joueurs soit tous regrouper en ligne je donne un interval de 2 case à chaques joueurs
 		if len(tab_v_max) > 4:
 
 			maxi = max(tab_v_max)-2
@@ -290,6 +295,7 @@ class Carte:
 
 		ind = tab_v_max.index(maxi)
 
+		#positionnement du joueur sur la carte
 		coordonnee = self.list_posit_joueur[ind][0]
 
 		joueur.coordonnee = coordonnee
@@ -298,12 +304,13 @@ class Carte:
 
 		self.labyrinthe[coordonnee[0]][coordonnee[1]] = joueur
 
+		#suppression du choix dans la liste list_posit_joueur
 		self.list_posit_joueur.remove((coordonnee, maxi))
 
 
 
 	def liste_coordonne_en_point_cardinaux(self, coord):
-		"""Méthode appelée quand on souhaite connaitre les chemins de passage valide"""
+		"""Méthode appelée quand on souhaite connaitre les coordonne de passage valide"""
 
 		p_cardinaux = []
 
@@ -329,7 +336,7 @@ class Carte:
 
 
 	def liste_valeur_en_point_cardinaux(self, coord):
-		"""Méthode appelée quand on souhaite connaitre les chemins de passage valide"""
+		"""Méthode appelée quand on souhaite connaitre les objet de passage valide"""
 
 		liste = []
 
@@ -348,7 +355,9 @@ class Carte:
 
 
 	def dfs(self):
+		"""methode qui permet de verifier et de recuperer dans une liste les chemin valide du labyrinthe ou graphe de profondeur"""
 
+		#l'objectif et de cree une list de chemin possible
 		y, x = len(self.labyrinthe), len(self.labyrinthe[0])
 
 		tab = [ [999 for _ in range(x)] for _ in range(y) ]
@@ -370,7 +379,6 @@ class Carte:
 
 				todo_list += [(i,distance + 1) for i in self.liste_valeur_en_point_cardinaux(elem_actuel)]
 
-		#return tab
 
 		liste_valeur = []
 

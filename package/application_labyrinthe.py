@@ -26,6 +26,7 @@ import copy
 
 
 class Application_labyrinthe:
+	"""classe qui organise les clients, joueur, et la carte"""
 
 	def __init__(self):
 
@@ -76,6 +77,7 @@ class Application_labyrinthe:
 	def chargement_carte(self, choix):
 		"""fonction qui va charger une carte choisi par le joueur"""
 		
+		#chargement du fichier
 		liste = g_e_s.Gestionnaire_entree_sortie_donnee.static_RecupList(self.ch_dossier)
 
 		nom_fichier = liste[int(choix)]
@@ -84,25 +86,29 @@ class Application_labyrinthe:
 
 		carte_en_str = g_e_s.Gestionnaire_entree_sortie_donnee.static_chargement_donnee(adr)
 
+		#creation de la carte via le fichier
 		self.carte = c.Carte(nom = nom_fichier, chaine = carte_en_str)
 
 
 
 	def proposition_de_deplacement(self, joueur, *affichage):
-		"""retourne dans une list les valeurs de deplacement possible du joueur"""
+		"""retourne dans une list des valeurs de deplacement possible du joueur"""
 
 		texte_sup = ""
 
+		#rajoute le texte envoyer en argument
 		for i in affichage:
 
 			texte_sup += str(i) + "\n"
 
 		p_cardinaux, liste_objet = self.carte.liste_coordonne_en_point_cardinaux(coord = joueur.coordonnee)
 
+		#formatage de la chaine de caractere
 		chaine = "{}\n{}\nproposition de deplacement:\n".format(texte_sup, self.carte.carte_utilisateur(joueur.coordonnee))
 
 		for i, mvt in enumerate(p_cardinaux):
-
+			
+			#si objet est une porte je verifie si elle et traversant ou non en fonction, choix au joueur de percer ou murrer porte
 			if isinstance(liste_objet[i], e_c.Porte):
 
 				if liste_objet[i].traversant:
@@ -119,6 +125,7 @@ class Application_labyrinthe:
 
 		chaine += "<QUIT> <PASSER>"
 
+		#rajout des autres comportement possible
 		autre_comportement = ["MN","ME","MS","MO","PN","PE","PS","PO","QUIT", "PASSER" ]
 		
 		p_cardinaux.extend(autre_comportement)
@@ -148,16 +155,19 @@ class Application_labyrinthe:
 			"PS" : (1,0),
 			"PO" : (0,-1)}
 
+		#en fonction de la reposne recu de la connexion je renvoi l'objet ciblé
 		obj = self.carte [coord_j[0] + dic[mouvement][0] ] [coord_j[1] + dic[mouvement][1] ]
 
 		if isinstance(obj, e_c.Couloir) or isinstance(obj, e_c.Porte) or isinstance(obj, e_c.Sortie):
 
+			#si reponse joueur equivalent a l'intervalle,  porte murrée
 			if mouvement in ["MN", "ME", "MS", "MO"]:
 
 				obj.forme = "0"
 
 				obj.traversant = False
-
+			
+			#sinon si reponse joueur equivalent a l'intervalle,  porte percée
 			elif mouvement in ["PN", "PE", "PS", "PO"]:
 
 				obj.forme = "."
@@ -166,6 +176,7 @@ class Application_labyrinthe:
 
 			else:
 
+				#joueur transferer dans ca nouvelle position
 				copie_objet = copy.deepcopy(joueur.element_nouvelle_position)
 					
 				joueur.coordonnee = obj.coordonnee

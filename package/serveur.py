@@ -293,7 +293,7 @@ class Serveur:
 
 				pass
 
-			#reception de message des differente connexions
+			#reception de message des differentes connexions
 			else:
 
 				for client in clients_a_lire:
