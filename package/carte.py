@@ -235,7 +235,7 @@ class Carte:
 			if coordonnee != coordonnee_utilisateur:
 				
 				#modification des autres joueurs
-				copie_labyrinthe[coordonnee[0]][coordonnee[1]] = e_c.Autres_joueurs()
+				copie_labyrinthe[coordonnee[0]][coordonnee[1]] = "x"
 
 		chaine=str()
 
