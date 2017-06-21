@@ -280,7 +280,6 @@ class Carte:
 		for i in self.list_posit_joueur:
 			tab_v_max.append(i[1])
 
-
 		maxi = max(tab_v_max)-2
 
 		ind = tab_v_max.index(maxi)
