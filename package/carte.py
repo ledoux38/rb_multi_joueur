@@ -35,7 +35,6 @@ class Carte:
 
 		self.sortie = self.rechercher_liste_valeurs(e_c.Sortie())[0]
 
-		self.list_posit_joueur = self.dfs()
 
 
 	def __str__(self):
@@ -145,20 +144,22 @@ class Carte:
 
 
 
-	def rechercher_liste_valeurs(self, valeur):
+	def rechercher_liste_valeurs(self, *valeur):
 		"""retourne les coordonnee de la valeur trouvé."""
 
 		liste = list()
+
+		for i in valeur:
 		
-		for j,y in enumerate(self.labyrinthe):
-			
-			for v,x in enumerate(y):
-					
-					retour = self.labyrinthe[j][v]
-					
-					if isinstance(retour, type(valeur)):
-					
-						liste.append(retour)
+			for j,y in enumerate(self.labyrinthe):
+				
+				for v,x in enumerate(y):
+						
+						retour = self.labyrinthe[j][v]
+						
+						if isinstance(retour, type(i)):
+						
+							liste.append(retour)
 
 		return liste
 
@@ -220,6 +221,7 @@ class Carte:
 
 	def carte_utilisateur(self, coordonnee_utilisateur):
 		"""Méthode appelée quand on souhaite creer une carte pour un utilisateur"""
+		
 		if not isinstance(coordonnee_utilisateur, tuple):
 
 			raise TypeError("erreur le typage de la variable coordonnee_utilisateur doit etre de type <tuple> et non <{}>".format(type(nom)))
@@ -253,6 +255,7 @@ class Carte:
 
 	def liste_valeurs_par_lignes (self, valeur):
 		"""Méthode appelée quand on souhaite creer liste de zone d'apparition autorisé"""
+		
 		liste = list()
 
 		ligne = list()
@@ -260,7 +263,7 @@ class Carte:
 		for j,y in enumerate(self.labyrinthe):
 
 			for x in y:
-				#if isinstance(x, type(valeur)):
+
 				if type(x) == type(valeur):
 
 					ligne.append(x.coordonnee)
@@ -278,34 +281,28 @@ class Carte:
 	def positionement_aleatoire(self, joueur):
 		"""Méthode appelée quand on souhaite positionner le joueur sur la carte"""
 
+		tab_dfs = self.dfs()
+
 		tab_v_max = []
 
 		#recuperation de la liste des positionnements possibles
-		for i in self.list_posit_joueur:
+		for i in tab_dfs:
 			tab_v_max.append(i[1])
 
-		# pour eviter que les joueurs soit tous regrouper en ligne je donne un interval de 2 case à chaques joueurs
-		if len(tab_v_max) > 4:
+		# recuperation de la valeur max du tableau
 
-			maxi = max(tab_v_max)-2
-
-		else:
-
-			maxi = max(tab_v_max)
+		maxi = max(tab_v_max)
 
 		ind = tab_v_max.index(maxi)
 
 		#positionnement du joueur sur la carte
-		coordonnee = self.list_posit_joueur[ind][0]
+		coordonnee = tab_dfs[ind][0]
 
 		joueur.coordonnee = coordonnee
 
 		joueur.element_nouvelle_position.coordonnee = coordonnee
 
 		self.labyrinthe[coordonnee[0]][coordonnee[1]] = joueur
-
-		#suppression du choix dans la liste list_posit_joueur
-		self.list_posit_joueur.remove((coordonnee, maxi))
 
 
 
@@ -360,9 +357,11 @@ class Carte:
 		#l'objectif et de cree une list de chemin possible
 		y, x = len(self.labyrinthe), len(self.labyrinthe[0])
 
+		#creation d'une carte avec toutes initialisées a 999
 		tab = [ [999 for _ in range(x)] for _ in range(y) ]
 
-		todo_list = [(i.coordonnee,0) for i in self.rechercher_liste_valeurs(e_c.Sortie())]
+		#recuperation de la liste des zones de depart (les joueurs seront aussi consideré commes des departs)
+		todo_list = [(i.coordonnee,0) for i in self.rechercher_liste_valeurs(e_c.Sortie(),e_c.Joueur())]
 
 		liste_noeud_dist_max = []
 
@@ -371,21 +370,24 @@ class Carte:
 
 		while len(todo_list) != 0:
 
+			#recupere la derniere valeur du tableau
 			elem_actuel, distance = todo_list.pop()
 
+			#pour chaque case adjacante traversante de la position on modifie la carte et on integre la distance
 			if tab[elem_actuel[0]][elem_actuel[1]] > distance:
 
 				tab[elem_actuel[0]][elem_actuel[1]] = distance
 
 				todo_list += [(i,distance + 1) for i in self.liste_valeur_en_point_cardinaux(elem_actuel)]
 
-
+		#pour chaque case on integre les coordonnees dans une liste ainsi que la valeur: tuple = ((coordonnee YX), valeur coordonnee))
 		liste_valeur = []
 
 		for y, r in enumerate(tab):
 
 			for x, v in enumerate(r):
 
+				#on ne prend que les objet qui sont traversable
 				if not v == 999:
 
 					liste_valeur.append(((y, x),v))

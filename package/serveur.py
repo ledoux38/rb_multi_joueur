@@ -162,7 +162,7 @@ class Serveur:
 
 						connexion.information_connexion.close()
 
-						self.connexion = close()
+						self.connexion.close()
 
 						break
 
