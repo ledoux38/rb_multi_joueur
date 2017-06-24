@@ -74,12 +74,15 @@ class Serveur:
 		connexion.send(message_a_envoyer)
 
 
+			
+
 	def reception_donnee(self, connexion, taille = 1024):
 		"""Méthode qui permet la reception de donnee"""
-		
+
 		message_recu =connexion.recv(taille)
-		
+
 		return message_recu.decode()
+		
 
 
 	def attente_de_connexion(self):
@@ -154,31 +157,9 @@ class Serveur:
 			if reponse_joueur in liste: 
 
 				#si reponse connexion == quit alors procedure de deconnexion lancé 
-				if reponse_joueur == "QUIT":
+				if reponse_joueur == "QUIT" or reponse_joueur == "PASSER":
 
-					#si moins de 2 connexions en cours sur le serveur coupure de la connexion client <-> serveur
-					#et coupure connexion serveur
-					if len(self.app.g_clients) < 2:
-
-						connexion.information_connexion.close()
-
-						self.connexion.close()
-
-						break
-
-					else:
-
-						coordonnee = connexion.joueur.coordonnee
-
-						self.app.carte[coordonnee[0]][coordonnee[1]] = e_c.Couloir(coordonnee = coordonnee)
-
-						connexion.information_connexion.close()
-
-						self.app.g_clients.tableau_de_connexions.remove(connexion)
-
-				elif reponse_joueur == "PASSER":
-				#sinon si la connexion renvoi PASSER alors on passe le tour du joueur
-					pass
+					return (reponse_joueur)
 
 				#si reponse connexion different de "quit alors mouvement autorisé"
 				else:
@@ -187,6 +168,7 @@ class Serveur:
 
 					self.emission_donnee(connexion.information_connexion,self.app.carte.carte_utilisateur(connexion.joueur.coordonnee), "en attente des autres joueurs...")
 
+					return "OK"
 			#si reponse non conforme a la liste envoi d'un message d'erreur à la connexion
 			else:
 
@@ -194,14 +176,7 @@ class Serveur:
 
 				continue
 
-			#verification que la connexion sois egal a la sortie
-			if connexion.joueur.coordonnee == self.app.carte.sortie.coordonnee:
 
-				return True
-
-			else:
-
-				return False
 
 	
 	def app_labyrinthe(self):
@@ -213,24 +188,52 @@ class Serveur:
 		print("carte chargée!\n en attente de clients")
 
 		#attente de connexion
-		self.test_attente_de_connexion()
+		self.attente_de_connexion()
 
 		boucle = True
 
 		#lancement de la partie jusqua victoire ou qu'ils y est plus de joueur
 		while boucle:
 
+			if len(self.app.g_clients) == 0:
+
+				boucle = False
+
+				break
+
 			for connexion in self.app.g_clients:
 
-				if self.phase_mouvement_joueur(connexion):
+				retour = self.phase_mouvement_joueur(connexion)
 
-					prep_inter_utilisateur = "felicitation vous avez gagné"
+				if retour == "OK":
 
-					self.emission_donnee(connexion.information_connexion, prep_inter_utilisateur)
+					if connexion.joueur.coordonnee == self.app.carte.sortie.coordonnee:
 
-					boucle = False
+						prep_inter_utilisateur = "felicitation vous avez gagné"
 
-					break
+						self.emission_donnee(connexion.information_connexion, prep_inter_utilisateur)
+
+						boucle = False
+
+						break
+
+				elif retour == "PASSER":
+
+					pass
+
+				elif retour == "QUIT":
+
+					coordonnee = connexion.joueur.coordonnee
+
+					self.app.carte[coordonnee[0]][coordonnee[1]] = e_c.Couloir(coordonnee = coordonnee)
+
+					connexion.information_connexion.close()
+
+					self.app.g_clients.tableau_de_connexions.remove(connexion)
+
+				else:
+
+					raise TypeError("erreur retour inconnu")
 
 		#procedure de deconnexion des connexions 
 		for connexion in self.app.g_clients:
@@ -238,7 +241,7 @@ class Serveur:
 			connexion.information_connexion.close()
 		
 		#arret de l'ecoute du port du serveur
-		self.connexion.close()
+		self.connexion.close()	
 
 
 
@@ -321,3 +324,26 @@ class Serveur:
 				
 						connexion_avec_client.send(message_a_envoyer)
 
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+if len(self.app.g_clients) < 2:
+
+connexion.information_connexion.close()
+
+self.connexion.close()
+
+break
+
+else:
+"""

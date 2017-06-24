@@ -71,6 +71,9 @@ class test_serveur (unittest.TestCase):
 
 	def test_labyrinthe(self):
 
+		self.a.app_labyrinthe()
+		"""
+
 		self.a.phase_chargement_carte()
 
 		print("carte chargée!\n en attente de clients")
@@ -98,6 +101,8 @@ class test_serveur (unittest.TestCase):
 			connexion.information_connexion.close()
 	
 		self.a.connexion.close()
+		"""
+
 
 if __name__ == '__main__':
 
