@@ -158,46 +158,6 @@ class test_carte (unittest.TestCase):
 		self.assertEqual(type(liste_objet[3]), type(e_c.Porte()))
 
 
-	"""
-	def test_dfsV2(self):
-
-		for i in retour:
-
-			for j in i:
-
-				if j == -1:
-
-					print("#", end = "")
-
-				elif j >= 10:
-
-					print("*", end = "")
-
-				else:
-
-					print(j, end = "")
-
-			print("")
-		
-
-		liste_valeur_max = []
-
-		for y, r in enumerate(retour):
-			for x, v in enumerate(r):
-				if not v == 999:
-					liste_valeur_max.append(((y, x),v))
-
-		valeur = []
-
-		for i in liste_valeur_max:
-			valeur.append(i[1])
-
-		print(liste_valeur_max)
-
-		print(valeur)
-
-	"""
-
 if __name__ == '__main__':
 
 	unittest.main()
