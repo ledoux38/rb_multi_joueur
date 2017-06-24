@@ -139,8 +139,6 @@ class Serveur:
 			if erreur:
 				
 				prep_inter_utilisateur , liste = self.app.proposition_de_deplacement(connexion.joueur, "Erreur dans la saisie veuillez recommencer!")
-
-				print(prep_inter_utilisateur, liste)
 			
 			#sinon envoi proposition à la connexion et verification des donnees
 			else:
@@ -205,6 +203,7 @@ class Serveur:
 
 				retour = self.phase_mouvement_joueur(connexion)
 
+				#si retour OK mouvement joueur accepter
 				if retour == "OK":
 
 					if connexion.joueur.coordonnee == self.app.carte.sortie.coordonnee:
@@ -217,10 +216,12 @@ class Serveur:
 
 						break
 
+				#sinon si retour PASSER saut du tour joueur
 				elif retour == "PASSER":
 
 					pass
 
+				#sinon si QUIT alors procedure de suppresion joueur
 				elif retour == "QUIT":
 
 					coordonnee = connexion.joueur.coordonnee
@@ -318,32 +319,10 @@ class Serveur:
 
 						break
 
+					#sinon erreur saisie rebouclage
 					else:
 
 						message_a_envoyer = "erreur commande non reconnu\ncommande : <C> commencer partie\n".encode()
 				
 						connexion_avec_client.send(message_a_envoyer)
 
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-if len(self.app.g_clients) < 2:
-
-connexion.information_connexion.close()
-
-self.connexion.close()
-
-break
-
-else:
-"""
