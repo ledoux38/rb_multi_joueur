@@ -245,12 +245,3 @@ class Gestionnaire_entree_sortie_donnee:
 
 
 
-
-if __name__ == '__main__':
-	a = Gestionnaire_entree_sortie_donnee("/home/ledoux/Documents/Programmation/python/python-le-on/proj/rb_multi_joueur/package/")
-	print(a.liste)
-	a.chemin_dossier = ("/home/ledoux/Documents/Programmation/python/python-le-on/proj/rb_multi_joueur/cartes/")
-	print(a.liste)
-	print(a.chargement_donnee("facile.txt"))
-
-	print(Gestionnaire_entree_sortie_donnee.static_RecupList(a.chemin_dossier))

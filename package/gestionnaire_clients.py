@@ -77,14 +77,3 @@ class Gestionnaire_clients:
 		del self.tableau_de_connexions[index]
 
 
-if __name__ == "__main__":
-
-	a = Gestionnaire_clients()
-	a.tableau_de_connexions += ["127.0.0.1", 12800]
-	a.tableau_de_connexions += ["127.0.0.2", 12800]
-	a.tableau_de_connexions += ["127.0.0.3", 12800]
-	print("aaaaaaaaaaaaaaaaaaaaaaaa")
-	print(a)
-	print(a[0])
-	#print(a)
-	

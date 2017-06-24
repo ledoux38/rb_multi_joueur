@@ -212,10 +212,3 @@ def sauvegarde_donnee(adresse_dossier,carte):
 		raise e
 
  
-
-if __name__ == "__main__":
-	c = {"Q":"quitter", "A": "Annuler"}
-	b = collections.OrderedDict(c)
-
-	a = interation_utilisateur("bonjour", b)
-

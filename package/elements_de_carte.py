@@ -97,16 +97,3 @@ class Sortie(Elements_de_carte):
 
 
 
-if __name__ == "__main__":
-
-	#a = Elements_de_carte()
-	a = Joueur(coordonnee = (4, 2))
-	print(a)
-	a = Mur()
-	print(a)
-	a = Bordure()
-	print(a)
-	a = Porte()
-	print(a)
-	a = Couloir()
-	print(a)
