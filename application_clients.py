@@ -83,14 +83,22 @@ def ouverture_connexion(adresse, port):
 
 
 if __name__ == '__main__':
-	
-	a = ouverture_connexion("127.0.0.1", 12100)
 
-	th_R = Thread_Reception(a)
+	try:
 
-	th_R.start()
+		a = ouverture_connexion("127.0.0.1", 12100)
 
-	th_E = Thread_Emission(a)
+	except ConnectionRefusedError:
 
-	th_E.start()
-	
+		print("erreur impossible de ce connecter au serveur!")
+
+	else:
+
+		th_R = Thread_Reception(a)
+
+		th_R.start()
+
+		th_E = Thread_Emission(a)
+
+		th_E.start()
+		
