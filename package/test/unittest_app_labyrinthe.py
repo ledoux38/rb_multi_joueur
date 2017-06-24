@@ -118,8 +118,7 @@ class test_app_labyrinthe (unittest.TestCase):
 		retour_reel = """Bienvenue sur l'application l'Abyrinthe multi_joueurs.
  Veillez choisir la carte pour lancer la partie!
 <0>: facile.txt
-<1>: test.txt
-<2>: prison.txt\n"""
+<1>: prison.txt\n"""
 
 
 		self.assertEqual(retour, retour_reel)
@@ -130,8 +129,7 @@ class test_app_labyrinthe (unittest.TestCase):
  Bienvenue sur l'application l'Abyrinthe multi_joueurs.
  Veillez choisir la carte pour lancer la partie!
 <0>: facile.txt
-<1>: test.txt
-<2>: prison.txt\n"""
+<1>: prison.txt\n"""
 
 		self.assertEqual(retour, retour_reel)
 
@@ -162,29 +160,6 @@ class test_app_labyrinthe (unittest.TestCase):
 		self.classe_app_lab.mouvement_joueur(joueur1, "S")
 
 		self.assertEqual( type( self.classe_app_lab.carte[1][1] ), type( e_c.Obstacle() ) )
-
-
-
-
-	def test_verification_de_victoire(self):
-
-		joueur1 = c_n.Connexion().joueur
-
-		self.classe_app_lab.chargement_carte(choix = "1")
-		
-		self.classe_app_lab.carte.positionement_aleatoire(joueur1)	
-
-		self.classe_app_lab.mouvement_joueur(joueur1, "S")
-
-		self.classe_app_lab.mouvement_joueur(joueur1, "S")
-
-		victoire = self.classe_app_lab.verification_de_victoire()
-
-		self.assertEqual(type(victoire), type(e_c.Joueur()))
-
-
-
-		
 
 
 
