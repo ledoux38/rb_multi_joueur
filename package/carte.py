@@ -326,8 +326,6 @@ class Carte:
 
 				liste_objet.append(objet)
 
-				print("liste_coordonne : ", p_cardinaux)
-
 		return p_cardinaux, liste_objet
 
 
